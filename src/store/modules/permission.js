@@ -1,7 +1,6 @@
 import { asyncRoutes, constantRoutes } from '@/router'
 import { getRoutes } from '@/api/admin/sys-role'
 import Layout from '@/layout'
-// import sysuserindex from '@/views/sysuser/index'
 
 /**
  * Use meta.role to determine if the current user has permission

@@ -125,17 +125,12 @@ export default {
       type: Object,
       required: true
     }
-    // fileList: {
-    //   type: Array,
-    //   required: false
-    // }
   },
   data() {
     const data = {
       formConfCopy: deepClone(this.formConf),
       [this.formConf.formModel]: {},
       [this.formConf.formRules]: {}
-      // fileList: this.fileList
     }
     this.initFormData(data.formConfCopy.fields, data[this.formConf.formModel])
     this.buildRules(data.formConfCopy.fields, data[this.formConf.formRules])
