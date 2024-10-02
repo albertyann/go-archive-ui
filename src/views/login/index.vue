@@ -136,8 +136,7 @@
       <div class="s-bottom-layer-content">
 
         <div class="lh">
-          <a class="text-color" href="https://beian.miit.gov.cn" target="_blank">
-            沪ICP备XXXXXXXXX号-1
+          <a class="text-color" href="#" target="_blank">
           </a>
         </div>
         <div class="open-content-info">
@@ -147,10 +146,9 @@
                 <div class="lh tip-item" style="display: none">
                   <a
                     class="text-color"
-                    href="https://beian.miit.gov.cn"
+                    href="#"
                     target="_blank"
                   >
-                    沪ICP备XXXXXXXXX号-1
                   </a>
                 </div>
               </div>
@@ -176,8 +174,8 @@ export default {
       cookiePassword: '',
       refreshParticles: true,
       loginForm: {
-        username: 'admin',
-        password: '123456',
+        username: '',
+        password: '',
         rememberMe: false,
         code: '',
         uuid: ''

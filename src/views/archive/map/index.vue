@@ -3,6 +3,7 @@
 </template>
 
 <script>
+  import { getConfigKey } from '@/api/admin/sys-config'
   export default {
     name: 'MapMain',
     mounted() {
@@ -23,7 +24,12 @@
         let lay = new T.TileLayer(imageURL, {minZoom: 1, maxZoom: 18});
         var config = {layers: [lay]};
         let map = new T.Map('mapDiv', config);
-        map.centerAndZoom(new T.LngLat(120.421980,30.299160), 18);
+
+        getConfigKey('base_location').then(res => {
+          let val = res.data.configValue;
+          c latlng = val.split(',');
+          map.centerAndZoom(new T.LngLat(latlng[0], latlng[1]), 18);
+        })
       }
     }
   }
