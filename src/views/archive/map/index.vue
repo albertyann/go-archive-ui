@@ -27,7 +27,7 @@
 
         getConfigKey('base_location').then(res => {
           let val = res.data.configValue;
-          c latlng = val.split(',');
+          let latlng = val.split(',');
           map.centerAndZoom(new T.LngLat(latlng[0], latlng[1]), 18);
         })
       }
