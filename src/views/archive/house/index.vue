@@ -24,23 +24,23 @@
                     </el-col>
                     <el-col :span="1.5">
                         <el-button
-                                v-permisaction="['archive:house:edit']"
-                                type="success"
-                                icon="el-icon-edit"
-                                size="mini"
-                                :disabled="single"
-                                @click="handleUpdate"
+                            v-permisaction="['archive:house:edit']"
+                            type="success"
+                            icon="el-icon-edit"
+                            size="mini"
+                            :disabled="single"
+                            @click="handleUpdate"
                         >修改
                         </el-button>
                     </el-col>
                     <el-col :span="1.5">
                         <el-button
-                                v-permisaction="['archive:house:remove']"
-                                type="danger"
-                                icon="el-icon-delete"
-                                size="mini"
-                                :disabled="multiple"
-                                @click="handleDelete"
+                            v-permisaction="['archive:house:remove']"
+                            type="danger"
+                            icon="el-icon-delete"
+                            size="mini"
+                            :disabled="multiple"
+                            @click="handleDelete"
                         >删除
                         </el-button>
                     </el-col>
@@ -112,6 +112,9 @@
                         </el-form-item>
                         <el-form-item label="房屋状态" prop="status">
                             <el-input v-model="form.status" placeholder="房屋状态"/>
+                        </el-form-item>
+                        <el-form-item label="地图标注" prop="location">
+                            <el-input v-model="form.location" placeholder="地图标注"/>
                         </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer">
@@ -196,6 +199,7 @@
                 floor: undefined,
                 buildYear: undefined,
                 status: undefined,
+                location: ''
             }
                 this.resetForm('form')
             },
