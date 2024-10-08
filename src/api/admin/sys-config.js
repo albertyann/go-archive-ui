@@ -9,6 +9,14 @@ export function listConfig(query) {
   })
 }
 
+export function listBaseConfig(query) {
+  return request({
+    url: '/api/v1/app-config/base',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询参数详细
 export function getConfig(configId) {
   return request({
