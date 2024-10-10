@@ -45,3 +45,11 @@ export function delTbCar(data) {
     })
 }
 
+export function getHukouGroup(data) {
+    return request({
+        url: '/api/v1/hukou-group/list',
+        method: 'get',
+        data: data
+    })
+}
+

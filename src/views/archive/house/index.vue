@@ -48,30 +48,21 @@
 
                 <el-table v-loading="loading" :data="houseList" @selection-change="handleSelectionChange">
                     <el-table-column type="selection" width="55" align="center"/>
-                    <el-table-column label="地址" align="center" prop="address" >
-                      <template slot-scope="scope">
-                        <span>{{ scope.row.address }}</span>
-                      </template>
-                    </el-table-column>
+                    <el-table-column label="分组" align="center" prop="hukouGroup" />
+                    <el-table-column label="户号" align="center" prop="hukouNo" />
+                    <el-table-column label="户主" align="center" prop="holder" />
+                    <el-table-column label="户主电话" align="center" prop="holderPhone" />
                     <el-table-column label="建筑面积" align="center" prop="area" />
                     <el-table-column label="房屋状态" align="center" prop="status" />
                     <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                         <template slot-scope="scope">
-                         <el-popconfirm
-                           class="delete-popconfirm"
-                           title="确认要修改吗?"
-                           confirm-button-text="修改"
-                           @confirm="handleUpdate(scope.row)"
-                         >
-                           <el-button
-                             slot="reference"
-                             v-permisaction="['archive:house:edit']"
-                             size="mini"
-                             type="text"
-                             icon="el-icon-edit"
-                           >修改
-                           </el-button>
-                         </el-popconfirm>
+                         <el-button
+                           v-permisaction="['archive:house:edit']"
+                           size="mini"
+                           type="text"
+                           icon="el-icon-edit"
+                           @click="handleUpdate(scope.row)"
+                         >修改</el-button>
                          <el-popconfirm
                             class="delete-popconfirm"
                             title="确认要删除吗?"
@@ -106,43 +97,186 @@
                   size="830px"
                 >
                     <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-                        <el-form-item label="基础地址" prop="address">
-                          <el-input v-model="base_address" placeholder="基础地址"/>
-                        </el-form-item>
-                        <el-form-item label="门牌号" prop="address">
-                          <el-input v-model="form.doorNumber" placeholder="门牌号"/>
-                        </el-form-item>
-                        <el-form-item label="建筑面积" prop="area">
-                          <el-input v-model="form.area" placeholder="建筑面积"/>
-                        </el-form-item>
-                        <el-form-item label="楼层" prop="floor">
-                          <el-input v-model="form.floor" placeholder="楼层"/>
-                        </el-form-item>
-                        <el-form-item label="建造年份" prop="buildYear">
-                          <el-input v-model="form.buildYear" placeholder="建造年份"/>
-                        </el-form-item>
-                        <el-form-item label="地图标注" prop="buildYear">
-                          <div id="mapDiv" style="width: 400px; height: 400px;"></div>
-                        </el-form-item>
-                        <el-form-item label="房屋状态" prop="status">
-                          <el-select
-                            v-model="form.status"
-                            placeholder="房屋状态"
-                            clearable
-                            size="small"
-                            style="width: 160px"
-                          >
-                          <el-option
-                            v-for="dict in statusOptions"
-                            :key="dict.value"
-                            :label="dict.label"
-                            :value="dict.value"
-                          />
-                          </el-select>
-                        </el-form-item>
-                        <el-form-item label="地图标注" prop="location">
-                            <el-input v-model="form.location" placeholder="地图标注"/>
-                        </el-form-item>
+                      <el-row>
+                        <el-col :span="24">
+                          <el-form-item label="地址" prop="address">
+                            {{ base_address }}
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                          <el-form-item label="居民分组" prop="hukouGroup">
+                            <el-select
+                              v-model="form.hukouGroup"
+                              placeholder="居民分组"
+                              clearable
+                            >
+                            <el-option
+                              v-for="dict in hukouGroupList"
+                              :key="dict.value"
+                              :label="dict.label"
+                              :value="dict.value"
+                            />
+                            </el-select>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                          <el-form-item label="户号" prop="hukouNo">
+                            <el-input v-model="form.hukouNo" placeholder="户号"/>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                          <el-form-item label="户主" prop="holder">
+                            <el-input v-model="form.holder" placeholder="户主"/>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                          <el-form-item label="户主电话" prop="holderPhone">
+                            <el-input v-model="form.holderPhone" placeholder="户主电话"/>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                          <el-form-item label="使用人" prop="user">
+                            <el-input v-model="form.user" placeholder="使用人"/>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                          <el-form-item label="使用人电话" prop="userPhone">
+                            <el-input v-model="form.userPhone" placeholder="使用人电话"/>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                          <el-form-item label="建筑层数" prop="floorNum">
+                            <el-select
+                              v-model="form.floorNum"
+                              placeholder="建筑层数"
+                              clearable
+                            >
+                            <el-option
+                              v-for="dict in floorOptions"
+                              :key="dict.value"
+                              :label="dict.label"
+                              :value="dict.value"
+                            />
+                            </el-select>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="建筑面积" prop="area">
+                              <el-input v-model="form.area" placeholder="建筑面积" style="width: 160px"/> 平方米
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                          <el-form-item label="结构类型" prop="area">
+                            <el-select
+                              v-model="form.structType"
+                              placeholder="结构类型"
+                              clearable
+                            >
+                            <el-option
+                              v-for="dict in buildStructureOptions"
+                              :key="dict.value"
+                              :label="dict.label"
+                              :value="dict.value"
+                            />
+                            </el-select>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                          <el-form-item label="建造方式" prop="area">
+                            <el-select
+                              v-model="form.buildMethod"
+                              placeholder="建造方式"
+                              clearable
+                            >
+                            <el-option
+                              v-for="dict in buildMethodOptions"
+                              :key="dict.value"
+                              :label="dict.label"
+                              :value="dict.value"
+                            />
+                            </el-select>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="24">
+                          <el-form-item label="建造年份" prop="buildYear">
+                            <el-select
+                              v-model="form.buildPeriod"
+                              placeholder="建造年份"
+                              clearable
+                            >
+                            <el-option
+                              v-for="dict in buildOptions"
+                              :key="dict.value"
+                              :label="dict.label"
+                              :value="dict.value"
+                            />
+                            </el-select>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                          <el-form-item label="土地性质" prop="area">
+                            <el-select
+                              v-model="form.landNature"
+                              placeholder="土地性质"
+                              clearable
+                            >
+                            <el-option
+                              v-for="dict in landNatureOptions"
+                              :key="dict.value"
+                              :label="dict.label"
+                              :value="dict.value"
+                            />
+                            </el-select>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                          <el-form-item label="主要用途" prop="area">
+                            <el-select
+                              v-model="form.usage"
+                              placeholder="主要用途"
+                              clearable
+                            >
+                            <el-option
+                              v-for="dict in usedOptions"
+                              :key="dict.value"
+                              :label="dict.label"
+                              :value="dict.value"
+                            />
+                            </el-select>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="24">
+                          <el-form-item label="房屋状态" prop="status">
+                            <el-select
+                              v-model="form.status"
+                              placeholder="房屋状态"
+                              clearable
+                            >
+                            <el-option
+                              v-for="dict in statusOptions"
+                              :key="dict.value"
+                              :label="dict.label"
+                              :value="dict.value"
+                            />
+                            </el-select>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                          <el-form-item label="地图标注" prop="longitude">
+                            {{ form.longitude +", "+ form.latitude }}
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                          <el-form-item>
+                              <el-button type="button" @click="openMap">打开地图</el-button>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="24">
+                          <el-form-item v-show="showMap">
+                              <div id="mapDiv" style="width: 600px; height: 400px;"></div>
+                          </el-form-item>
+                        </el-col>
+                      </el-row>
                     </el-form>
                     <div class="demo-drawer__footer">
                         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -155,7 +289,8 @@
 </template>
 
 <script>
-    import {addHouse, delHouse, getHouse, listHouse, updateHouse} from '@/api/archive/house';
+    import { addHouse, delHouse, getHouse, listHouse, updateHouse } from '@/api/archive/house';
+    import { getHukouGroup } from '@/api/archive/car';
     import { getConfigKey } from '@/api/admin/sys-config';
     export default {
         name: 'archiveHouse',
@@ -179,8 +314,49 @@
             // 是否显示弹出层
             open: false,
             isEdit: false,
+            showMap: false,
             // 类型数据字典
             typeOptions: [],
+            floorOptions: [
+              {
+                "value": "1",
+                "label": "一层",
+              },
+              {
+                "value": "2",
+                "label": "二层",
+              },
+              {
+                "value": "3",
+                "label": "三层",
+              },
+              {
+                "value": "4",
+                "label": "三层以上",
+              },
+            ],
+            buildOptions: [
+              {
+                "value": "1",
+                "label": "1980年及以前",
+              },
+              {
+                "value": "2",
+                "label": "1981~1990年",
+              },
+              {
+                "value": "3",
+                "label": "1991~2000年",
+              },
+              {
+                "value": "4",
+                "label": "2001~2010年",
+              },
+              {
+                "value": "5",
+                "label": "2011年及以后",
+              },
+            ],
             statusOptions: [
               {
                 "value": "正常",
@@ -192,6 +368,133 @@
               }
             ],
             houseList: [],
+            hukouGroupList: [],
+            buildStructureOptions: [
+              {
+                "value": "1",
+                "label": "砖石结构(预制板)",
+              },
+              {
+                "value": "2",
+                "label": "砖石结构(非预制板)",
+              },
+              {
+                "value": "3",
+                "label": "土木结构",
+              },
+              {
+                "value": "4",
+                "label": "混凝土结构",
+              },
+              {
+                "value": "5",
+                "label": "窑洞",
+              },
+              {
+                "value": "6",
+                "label": "钢结构",
+              },
+              {
+                "value": "7",
+                "label": "混杂结构",
+              },
+              {
+                "value": "8",
+                "label": "其它",
+              }
+            ],
+            buildMethodOptions: [
+              {
+                "value": "1",
+                "label": "建筑工匠建造",
+              },
+              {
+                "value": "2",
+                "label": "有资质的施工队建造",
+              },
+              {
+                "value": "3",
+                "label": "其它",
+              }
+            ],
+            // 土地性质
+            landNatureOptions: [
+              {
+                "value": "1",
+                "label": "宅基地",
+              },
+              {
+                "value": "2",
+                "label": "非宅基地",
+              },
+              {
+                "value": "3",
+                "label": "农用地",
+              },
+              {
+                "value": "4",
+                "label": "建设用地",
+              },
+              {
+                "value": "5",
+                "label": "未利用地",
+              }
+            ],
+            // 主要用途
+            usedOptions: [
+              {
+                "value": "1",
+                "label": "行政办公",
+              },
+              {
+                "value": "2",
+                "label": "教育设施",
+              },
+              {
+                "value": "3",
+                "label": "医疗卫生",
+              },
+              {
+                "value": "4",
+                "label": "文化设施",
+              },
+              {
+                "value": "5",
+                "label": "养老设施",
+              },
+              {
+                "value": "6",
+                "label": "批发零售",
+              },
+              {
+                "value": "7",
+                "label": "餐饮饭店",
+              },
+              {
+                "value": "8",
+                "label": "住宿宾馆",
+              },
+              {
+                "value": "9",
+                "label": "休闲娱乐",
+              },
+              {
+                "value": "10",
+                "label": "宗教场所",
+              },
+              {
+                "value": "11",
+                "label": "农贸市场",
+              },
+              {
+                "value": "12",
+                "label": "生产加工",
+              },
+              {
+                "value": "13",
+                "label": "其它",
+              }
+            ],
 
             // 关系表类型
 
@@ -199,7 +502,6 @@
             queryParams: {
                 pageIndex: 1,
                 pageSize: 10,
-
             },
             // 表单参数
             form: {},
@@ -218,26 +520,44 @@
           document.head.appendChild(script);
         },
         methods: {
-          initMap() {
+          openMap() {
+            this.showMap = true
+            let that = this;
             const imageURL = "http://t0.tianditu.gov.cn/img_w/wmts?" +
                             "SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0" +
                             "&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles" +
                             "&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=cbfe568d6062fdbb2efca8c9ea29d32b";
-            let lay = new T.TileLayer(imageURL, {minZoom: 1, maxZoom: 18});
-            var config = {layers: [lay]};
-            let map = new T.Map('mapDiv', config);
-            map.centerAndZoom(new T.LngLat(120.421980,30.299160), 18);
 
-            // getConfigKey('base_location').then(res => {
-            //   let val = res.data.configValue;
-            //   let latlng = val.split(',');
+            setTimeout(() => {
+              let lay = new T.TileLayer(imageURL, {minZoom: 1, maxZoom: 18});
+              var config = {layers: [lay]};
+              let map = new T.Map('mapDiv', config);
+              map.centerAndZoom(new T.LngLat(120.421980,30.299160), 18);
+              var cp = new T.CoordinatePickup(map, {callback: (lnglat) => {
+                that.form.longitude = lnglat.lng.toFixed(6);
+                that.form.latitude  = lnglat.lat.toFixed(6);
 
-            // })
+                map.clearOverLays();
+                var marker = new T.Marker(lnglat);
+                map.addOverLay(marker);
+              }})
+              cp.addEvent();
+            }, 100)
           },
           baseConf() {
             getConfigKey('base_address').then(res => {
               this.base_address = res.data.configValue
             });
+
+            getHukouGroup().then(res => {
+              res.data.list.forEach(r => {
+                  this.hukouGroupList.push({
+                    label: r.name,
+                    value: r.id + ""
+                  })
+              })
+              console.log(this.hukouGroupList)
+            })
           },
             /** 查询参数列表 */
             getList() {
@@ -263,15 +583,12 @@
                 floor: undefined,
                 buildYear: undefined,
                 status: undefined,
-<<<<<<< HEAD
-                location: ''
-            }
-                this.resetForm('form')
-=======
-                doorNumber: undefined,
+                longitude: undefined,
+                latitude: undefined,
+                doorNo: undefined,
+                hukouGroup: undefined,
               }
               this.resetForm('form')
->>>>>>> main
             },
             getImgList: function() {
               this.form[this.fileIndex] = this.$refs['fileChoose'].resultList[0].fullUrl
@@ -310,12 +627,11 @@
                 this.reset()
                 const id = row.id || this.ids
                 getHouse(id).then(response => {
-                    this.form   = response.data
-                    this.open   = true
-                    this.title  = '修改房屋信息'
-                    this.isEdit = true
-
-                    this.initMap()
+                    this.form     = response.data
+                    // this.location = response.data.location
+                    this.open     = true
+                    this.title    = '修改房屋信息'
+                    this.isEdit   = true
                 })
             },
             /** 提交按钮 */
@@ -323,7 +639,8 @@
                 let that = this;
                 this.$refs['form'].validate(valid => {
                     if (valid) {
-                      this.form.address = that.base_address + this.form.doorNumber;
+                      // this.form.location = that.longitude;
+                      // this.form.latitude = that.latitude;
                       if (this.form.id !== undefined) {
                           updateHouse(this.form).then(response => {
                               if (response.code === 200) {

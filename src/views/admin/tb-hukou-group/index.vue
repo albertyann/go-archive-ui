@@ -4,63 +4,38 @@
         <template #wrapper>
             <el-card class="box-card">
                 <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-                  <el-form-item label="姓名" prop="name">
-                    <el-input
-                      v-model="queryParams.name"
-                      placeholder="请输入人员姓名"
-                      clearable
-                      size="small"
-                      style="width: 160px"
-                      @keyup.enter.native="handleQuery"
-                    />
-                  </el-form-item>
-                  <el-form-item label="电话" prop="phone">
-                    <el-input
-                      v-model="queryParams.phone"
-                      placeholder="手机号"
-                      clearable
-                      size="small"
-                      style="width: 160px"
-                      @keyup.enter.native="handleQuery"
-                    />
-                  </el-form-item>
-                  <el-form-item label="" prop="phone">
-                    <el-checkbox
-                      v-model="queryParams.overSixty"
-                      true-label="1" false-label="0"
-                    /> 60周岁
-                  </el-form-item>
-                  <el-form-item>
-                      <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-                      <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-                  </el-form-item>
+                    
+                    <el-form-item>
+                        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+                        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+                    </el-form-item>
                 </el-form>
 
                 <el-row :gutter="10" class="mb8">
                     <el-col :span="1.5">
                         <el-button
-                            v-permisaction="['admin:tbMember:add']"
-                            type="primary"
-                            icon="el-icon-plus"
-                            size="mini"
-                            @click="handleAdd"
+                                v-permisaction="['admin:tbHukouGroup:add']"
+                                type="primary"
+                                icon="el-icon-plus"
+                                size="mini"
+                                @click="handleAdd"
                         >新增
                         </el-button>
                     </el-col>
                     <el-col :span="1.5">
                         <el-button
-                            v-permisaction="['admin:tbMember:edit']"
-                            type="success"
-                            icon="el-icon-edit"
-                            size="mini"
-                            :disabled="single"
-                            @click="handleUpdate"
+                                v-permisaction="['admin:tbHukouGroup:edit']"
+                                type="success"
+                                icon="el-icon-edit"
+                                size="mini"
+                                :disabled="single"
+                                @click="handleUpdate"
                         >修改
                         </el-button>
                     </el-col>
                     <el-col :span="1.5">
                         <el-button
-                                v-permisaction="['admin:tbMember:remove']"
+                                v-permisaction="['admin:tbHukouGroup:remove']"
                                 type="danger"
                                 icon="el-icon-delete"
                                 size="mini"
@@ -71,33 +46,25 @@
                     </el-col>
                 </el-row>
 
-                <el-table v-loading="loading" :data="tbMemberList" @selection-change="handleSelectionChange">
+                <el-table v-loading="loading" :data="tbHukouGroupList" @selection-change="handleSelectionChange">
                     <el-table-column type="selection" width="55" align="center"/>
-                    <el-table-column label="姓名" align="center" prop="name" />
-                    <el-table-column label="性别" align="center" prop="gender" />
-                    <el-table-column label="年龄" align="center" prop="age" />
-                    <el-table-column label="身份证" align="center" prop="idCard" />
-                    <el-table-column label="手机" align="center" prop="phone" width="140" />
-                    <el-table-column label="婚姻状况" align="center" prop="married" />
-
                     <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                         <template slot-scope="scope">
-                          <el-button
-                            v-permisaction="['admin:tbMember:edit']"
-                            size="mini"
-                            type="text"
-                            icon="el-icon-edit"
-                            @click="handleUpdate(scope.row)"
-                          >详情
-                          </el-button>
-                          <el-button
-                           v-permisaction="['admin:tbMember:edit']"
-                           size="mini"
-                           type="text"
-                           icon="el-icon-edit"
-                           @click="handleUpdate(scope.row)"
-                         >修改
-                         </el-button>
+                         <el-popconfirm
+                           class="delete-popconfirm"
+                           title="确认要修改吗?"
+                           confirm-button-text="修改"
+                           @confirm="handleUpdate(scope.row)"
+                         >
+                           <el-button
+                             slot="reference"
+                             v-permisaction="['admin:tbHukouGroup:edit']"
+                             size="mini"
+                             type="text"
+                             icon="el-icon-edit"
+                           >修改
+                           </el-button>
+                         </el-popconfirm>
                          <el-popconfirm
                             class="delete-popconfirm"
                             title="确认要删除吗?"
@@ -106,7 +73,7 @@
                          >
                             <el-button
                               slot="reference"
-                              v-permisaction="['admin:tbMember:remove']"
+                              v-permisaction="['admin:tbHukouGroup:remove']"
                               size="mini"
                               type="text"
                               icon="el-icon-delete"
@@ -118,32 +85,21 @@
                 </el-table>
 
                 <pagination
-                    v-show="total>0"
-                    :total="total"
-                    :page.sync="queryParams.pageIndex"
-                    :limit.sync="queryParams.pageSize"
-                    @pagination="getList"
+                        v-show="total>0"
+                        :total="total"
+                        :page.sync="queryParams.pageIndex"
+                        :limit.sync="queryParams.pageSize"
+                        @pagination="getList"
                 />
 
                 <!-- 添加或修改对话框 -->
                 <el-dialog :title="title" :visible.sync="open" width="500px">
                     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-                          <el-form-item label="名称" prop="name">
-                              <el-input v-model="form.name" placeholder="名称" />
-                          </el-form-item>
-                          <el-form-item label="电话" prop="phone">
-                              <el-input v-model="form.phone" placeholder="电话" />
-                          </el-form-item>
-                          <el-form-item label="性别" prop="gender">
-                              <el-select v-model="form.gender" placeholder="请选择">
-                                <el-option
-                                  v-for="dict in sexOptions"
-                                  :key="dict.value"
-                                  :label="dict.label"
-                                  :value="dict.label"
-                                />
-                              </el-select>
-                          </el-form-item>
+                        
+                                    <el-form-item label="名称" prop="name">
+                                        <el-input v-model="form.name" placeholder="名称"
+                                                      />
+                                    </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer">
                         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -156,10 +112,10 @@
 </template>
 
 <script>
-    import {addTbMember, delTbMember, getTbMember, listTbMember, updateTbMember} from '@/api/archive/member'
-
+    import {addTbHukouGroup, delTbHukouGroup, getTbHukouGroup, listTbHukouGroup, updateTbHukouGroup} from '@/api/admin/tb-hukou-group'
+    
     export default {
-        name: 'archiveMember',
+        name: 'TbHukouGroup',
         components: {
         },
         data() {
@@ -181,18 +137,15 @@
                 isEdit: false,
                 // 类型数据字典
                 typeOptions: [],
-                tbMemberList: [],
-                sexOptions: [],
-
+                tbHukouGroupList: [],
+                
                 // 关系表类型
-
+                
                 // 查询参数
                 queryParams: {
-                  name: '',
-                  phone: '',
-                  overSixty: 0,
-                  pageIndex: 1,
-                  pageSize: 10,
+                    pageIndex: 1,
+                    pageSize: 10,
+                    
                 },
                 // 表单参数
                 form: {
@@ -202,17 +155,14 @@
         }
         },
         created() {
-            this.getList();
-            this.getDicts('sys_user_sex').then(response => {
-              this.sexOptions = response.data
-            })
-        },
+            this.getList()
+            },
         methods: {
             /** 查询参数列表 */
             getList() {
                 this.loading = true
-                listTbMember(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-                        this.tbMemberList = response.data.list
+                listTbHukouGroup(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+                        this.tbHukouGroupList = response.data.list
                         this.total = response.data.count
                         this.loading = false
                     }
@@ -226,13 +176,9 @@
             // 表单重置
             reset() {
                 this.form = {
-
+                
                 id: undefined,
                 name: undefined,
-                phone: undefined,
-                gender: undefined,
-                createAt: undefined,
-                updateAt: undefined,
             }
                 this.resetForm('form')
             },
@@ -259,7 +205,7 @@
             handleAdd() {
                 this.reset()
                 this.open = true
-                this.title = '添加人员信息'
+                this.title = '添加TbHukouGroup'
                 this.isEdit = false
             },
             // 多选框选中数据
@@ -273,10 +219,10 @@
                 this.reset()
                 const id =
                 row.id || this.ids
-                getTbMember(id).then(response => {
+                getTbHukouGroup(id).then(response => {
                     this.form = response.data
                     this.open = true
-                    this.title = '修改人员信息'
+                    this.title = '修改TbHukouGroup'
                     this.isEdit = true
                 })
             },
@@ -285,7 +231,7 @@
                 this.$refs['form'].validate(valid => {
                     if (valid) {
                         if (this.form.id !== undefined) {
-                            updateTbMember(this.form).then(response => {
+                            updateTbHukouGroup(this.form).then(response => {
                                 if (response.code === 200) {
                                     this.msgSuccess(response.msg)
                                     this.open = false
@@ -295,7 +241,7 @@
                                 }
                             })
                         } else {
-                            addTbMember(this.form).then(response => {
+                            addTbHukouGroup(this.form).then(response => {
                                 if (response.code === 200) {
                                     this.msgSuccess(response.msg)
                                     this.open = false
@@ -317,7 +263,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(function () {
-                      return delTbMember( { 'ids': Ids })
+                      return delTbHukouGroup( { 'ids': Ids })
                 }).then((response) => {
                    if (response.code === 200) {
                      this.msgSuccess(response.msg)
