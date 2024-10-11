@@ -48,20 +48,22 @@
             this.houseTotal = response.data.count
 
             this.houseList.forEach(house => {
-              let lnglat = new T.LngLat(house.longitude, house.latitude)
-              var marker = new T.Marker(lnglat);
-              this.map.addOverLay(marker);
+              if (house.longitude.length > 0) {
+                let lnglat = new T.LngLat(house.longitude, house.latitude)
+                var marker = new T.Marker(lnglat);
+                this.map.addOverLay(marker);
 
-              var infoWin = new T.InfoWindow();
-              infoWin.setLngLat(lnglat);
+                var infoWin = new T.InfoWindow();
+                infoWin.setLngLat(lnglat);
 
-              let content = '户主: ' + house.holder +'<br/>' +
-                            '电话: ' + house.holderPhone +'<br/>' +
-                            '状态: ' + house.status +'<br/>' +
-                            '面积: ' + house.area +' 平米 <br/>'
-              infoWin.setContent(content);
-              //向地图上添加信息窗口
-              this.map.addOverLay(infoWin);
+                let content = '户主: ' + house.holder +'<br/>' +
+                              '电话: ' + house.holderPhone +'<br/>' +
+                              '状态: ' + house.status +'<br/>' +
+                              '面积: ' + house.area +' 平米 <br/>'
+                infoWin.setContent(content);
+                //向地图上添加信息窗口
+                this.map.addOverLay(infoWin);
+              }
             })
           }
         )

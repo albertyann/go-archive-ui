@@ -7,28 +7,55 @@
                   <el-form-item label="姓名" prop="name">
                     <el-input
                       v-model="queryParams.name"
-                      placeholder="请输入人员姓名"
+                      placeholder="姓名"
                       clearable
                       size="small"
-                      style="width: 160px"
+                      style="width: 120px"
                       @keyup.enter.native="handleQuery"
                     />
                   </el-form-item>
-                  <el-form-item label="电话" prop="phone">
+                  <el-form-item label="身份证" prop="idCard">
+                    <el-input
+                      v-model="queryParams.idCard"
+                      placeholder="身份证"
+                      clearable
+                      size="small"
+                      style="width: 180px"
+                      @keyup.enter.native="handleQuery"
+                    />
+                  </el-form-item>
+                  <el-form-item label="手机" prop="phone">
                     <el-input
                       v-model="queryParams.phone"
-                      placeholder="手机号"
+                      placeholder="手机"
                       clearable
                       size="small"
-                      style="width: 160px"
+                      style="width: 120px"
                       @keyup.enter.native="handleQuery"
                     />
                   </el-form-item>
-                  <el-form-item label="" prop="phone">
-                    <el-checkbox
-                      v-model="queryParams.overSixty"
-                      true-label="1" false-label="0"
-                    /> 60周岁
+                  <el-form-item label="性别" prop="gender">
+                    <el-select v-model="queryParams.gender" size="small" style="width: 60px;">
+                      <el-option label="男" value="男" />
+                      <el-option label="女" value="女" />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="年龄" prop="age">
+                    <el-select v-model="queryParams.compare" size="small" style="width: 120px;" placeholder="比较">
+                      <el-option label="等于" value="EQ" />
+                      <el-option label="大于" value="G" />
+                      <el-option label="大于等于" value="GE" />
+                      <el-option label="小于" value="L" />
+                      <el-option label="小于等于" value="LE" />
+                    </el-select>
+                    <el-input
+                      v-model="queryParams.age"
+                      placeholder="年龄"
+                      clearable
+                      size="small"
+                      style="width: 80px"
+                      @keyup.enter.native="handleQuery"
+                    />
                   </el-form-item>
                   <el-form-item>
                       <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -189,7 +216,11 @@
                 // 查询参数
                 queryParams: {
                   name: '',
+                  idCard: '',
                   phone: '',
+                  gender: '',
+                  compare: '',
+                  age: '',
                   overSixty: 0,
                   pageIndex: 1,
                   pageSize: 10,

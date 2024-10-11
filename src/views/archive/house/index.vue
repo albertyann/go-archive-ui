@@ -4,11 +4,35 @@
         <template #wrapper>
             <el-card class="box-card">
                 <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-
-                    <el-form-item>
-                        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-                        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-                    </el-form-item>
+                  <el-form-item label="户主姓名" prop="holder">
+                    <el-input
+                      v-model="queryParams.holder"
+                      placeholder="户主姓名"
+                      clearable
+                      size="small"
+                      style="width: 160px"
+                      @keyup.enter.native="handleQuery"
+                    />
+                  </el-form-item>
+                  <el-form-item label="户籍分组" prop="hukouGroup">
+                    <el-select
+                      v-model="queryParams.hukouGroup"
+                      placeholder="户籍分组"
+                      style="width: 120px;"
+                      clearable
+                    >
+                    <el-option
+                      v-for="dict in hukouGroupList"
+                      :key="dict.value"
+                      :label="dict.label"
+                      :value="dict.label"
+                    />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item>
+                      <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
+                      <el-button icon="el-icon-refresh" size="small" @click="resetQuery">重置</el-button>
+                  </el-form-item>
                 </el-form>
 
                 <el-row :gutter="10" class="mb8">
@@ -104,10 +128,10 @@
                           </el-form-item>
                         </el-col>
                         <el-col :span="12">
-                          <el-form-item label="居民分组" prop="hukouGroup">
+                          <el-form-item label="户籍分组" prop="hukouGroup">
                             <el-select
                               v-model="form.hukouGroup"
-                              placeholder="居民分组"
+                              placeholder="户籍分组"
                               clearable
                             >
                             <el-option
@@ -120,13 +144,13 @@
                           </el-form-item>
                         </el-col>
                         <el-col :span="12">
-                          <el-form-item label="户号" prop="hukouNo">
-                            <el-input v-model="form.hukouNo" placeholder="户号"/>
+                          <el-form-item label="户籍户号" prop="hukouNo">
+                            <el-input v-model="form.hukouNo" placeholder="户籍户号"/>
                           </el-form-item>
                         </el-col>
                         <el-col :span="12">
-                          <el-form-item label="户主" prop="holder">
-                            <el-input v-model="form.holder" placeholder="户主"/>
+                          <el-form-item label="户籍户主" prop="holder">
+                            <el-input v-model="form.holder" placeholder="户籍户主"/>
                           </el-form-item>
                         </el-col>
                         <el-col :span="12">
@@ -135,13 +159,13 @@
                           </el-form-item>
                         </el-col>
                         <el-col :span="12">
-                          <el-form-item label="使用人" prop="user">
-                            <el-input v-model="form.user" placeholder="使用人"/>
+                          <el-form-item label="租户姓名" prop="user">
+                            <el-input v-model="form.user" placeholder="租户姓名"/>
                           </el-form-item>
                         </el-col>
                         <el-col :span="12">
-                          <el-form-item label="使用人电话" prop="userPhone">
-                            <el-input v-model="form.userPhone" placeholder="使用人电话"/>
+                          <el-form-item label="租户电话" prop="userPhone">
+                            <el-input v-model="form.userPhone" placeholder="租户电话"/>
                           </el-form-item>
                         </el-col>
                         <el-col :span="12">
@@ -261,6 +285,40 @@
                             </el-select>
                           </el-form-item>
                         </el-col>
+                        <el-col :span="24">
+                          <el-form-item label="户籍成员" prop="status">
+                            <el-button @click="openDialog = true" size="mini">添 加</el-button>
+                          </el-form-item>
+                        </el-col>
+                        <el-col :span="24">
+                          <el-form-item>
+                            <el-table :data="familyMember">
+                              <el-table-column label="姓名" align="center" prop="name" />
+                              <el-table-column label="年龄" align="center" prop="age" />
+                              <el-table-column label="电话" align="center" prop="phone" />
+                              <el-table-column label="户主" align="center" prop="houseHolderRelation" />
+                              <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+                                  <template slot-scope="scope">
+                                   <el-popconfirm
+                                      class="delete-popconfirm"
+                                      title="确认要删除吗?"
+                                      confirm-button-text="删除"
+                                      @confirm="handleDelete(scope.row)"
+                                   >
+                                      <el-button
+                                        slot="reference"
+                                        v-permisaction="['archive:house:remove']"
+                                        size="mini"
+                                        type="text"
+                                        icon="el-icon-delete"
+                                      >删除
+                                      </el-button>
+                                   </el-popconfirm>
+                                  </template>
+                              </el-table-column>
+                            </el-table>
+                          </el-form-item>
+                        </el-col>
                         <el-col :span="12">
                           <el-form-item label="地图标注" prop="longitude">
                             {{ form.longitude +", "+ form.latitude }}
@@ -283,6 +341,36 @@
                         <el-button @click="cancel">取 消</el-button>
                     </div>
                 </el-drawer>
+
+                <!-- 添加或修改对话框 -->
+                <el-dialog title="添加家庭成员" :visible.sync="openDialog" width="800px">
+                  <el-form ref="familyForm" :model="familyParams" :inline="true" label-width="68px">
+                    <el-form-item label="姓名" prop="name">
+                      <el-input v-model="familyParams.name" placeholder="姓名" />
+                    </el-form-item>
+                    <el-form-item label="电话" prop="phone">
+                      <el-input v-model="familyParams.phone" placeholder="电话" />
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" icon="el-icon-search" @click="familyQuery">查找</el-button>
+                    </el-form-item>
+                  </el-form>
+
+                  <el-table v-loading="loading" :data="familyResult" @selection-change="handleSelectionChange">
+                      <el-table-column label="姓名" align="center" prop="name" />
+                      <el-table-column label="年龄" align="center" prop="age" />
+                      <el-table-column label="性别" align="center" prop="gender" />
+                      <el-table-column label="户主" align="center" prop="houseHolderRelation" />
+                      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+                        <template slot-scope="scope">
+                          <el-button
+                            size="mini"
+                            type="text"
+                            @click="addFamilyMember(scope.row)">添加</el-button>
+                        </template>
+                      </el-table-column>
+                  </el-table>
+                </el-dialog>
             </el-card>
         </template>
     </BasicLayout>
@@ -291,6 +379,7 @@
 <script>
     import { addHouse, delHouse, getHouse, listHouse, updateHouse } from '@/api/archive/house';
     import { getHukouGroup } from '@/api/archive/car';
+    import { listTbMember } from '@/api/archive/member'
     import { getConfigKey } from '@/api/admin/sys-config';
     export default {
         name: 'archiveHouse',
@@ -313,10 +402,12 @@
             base_address: '',
             // 是否显示弹出层
             open: false,
+            openDialog: false,
             isEdit: false,
             showMap: false,
             // 类型数据字典
             typeOptions: [],
+            familyResult: [],
             floorOptions: [
               {
                 "value": "1",
@@ -496,12 +587,19 @@
               }
             ],
 
-            // 关系表类型
+            // 家庭成员
+            familyMember:[],
 
             // 查询参数
             queryParams: {
-                pageIndex: 1,
-                pageSize: 10,
+              holder: '',
+              hukouGroup: '',
+              pageIndex: 1,
+              pageSize: 10,
+            },
+            familyParams: {
+              name: '',
+              phone: '',
             },
             // 表单参数
             form: {},
@@ -556,18 +654,17 @@
                     value: r.id + ""
                   })
               })
-              console.log(this.hukouGroupList)
             })
           },
             /** 查询参数列表 */
             getList() {
-                this.loading = true
-                listHouse(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-                        this.houseList = response.data.list
-                        this.total = response.data.count
-                        this.loading = false
-                    }
-                )
+              this.loading = true
+              listHouse(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+                  this.houseList = response.data.list
+                  this.total = response.data.count
+                  this.loading = false
+                }
+              )
             },
             // 取消按钮
             cancel() {
@@ -603,6 +700,14 @@
                 this.queryParams.pageIndex = 1
                 this.getList()
             },
+            familyQuery() {
+              listTbMember(this.familyParams).then((res) => {
+                this.familyResult = res.data.list
+              })
+            },
+            addFamilyMember(item) {
+              this.familyMember.push(item)
+            },
             /** 重置按钮操作 */
             resetQuery() {
                 this.dateRange = []
@@ -627,11 +732,10 @@
                 this.reset()
                 const id = row.id || this.ids
                 getHouse(id).then(response => {
-                    this.form     = response.data
-                    // this.location = response.data.location
-                    this.open     = true
-                    this.title    = '修改房屋信息'
-                    this.isEdit   = true
+                    this.form   = response.data
+                    this.open   = true
+                    this.title  = '修改房屋信息'
+                    this.isEdit = true
                 })
             },
             /** 提交按钮 */
@@ -639,8 +743,6 @@
                 let that = this;
                 this.$refs['form'].validate(valid => {
                     if (valid) {
-                      // this.form.location = that.longitude;
-                      // this.form.latitude = that.latitude;
                       if (this.form.id !== undefined) {
                           updateHouse(this.form).then(response => {
                               if (response.code === 200) {
