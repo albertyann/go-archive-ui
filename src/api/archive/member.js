@@ -9,6 +9,16 @@ export function listTbMember(query) {
     })
 }
 
+// 导出
+export function exportMember(query) {
+    return request({
+        url: '/api/v1/member/export',
+        method: 'get',
+        params: query
+    })
+}
+
+
 // 查询TbMember详细
 export function getTbMember (id) {
     return request({

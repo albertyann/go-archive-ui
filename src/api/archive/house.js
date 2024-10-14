@@ -9,6 +9,14 @@ export function listHouse(query) {
     })
 }
 
+export function exportHouse(query) {
+    return request({
+        url: '/api/v1/house/export',
+        method: 'get',
+        params: query
+    })
+}
+
 // 查询House详细
 export function getHouse (id) {
     return request({

@@ -102,6 +102,22 @@
                   @click="handleDelete"
                 >删除</el-button>
               </el-col>
+              <el-col :span="1.5">
+                <el-button
+                  v-permisaction="['admin:sysUser:import']"
+                  type="primary"
+                  size="mini"
+                  @click="handleImport"
+                >导入</el-button>
+              </el-col>
+              <el-col :span="1.5">
+                <el-button
+                  v-permisaction="['admin:sysUser:export']"
+                  type="primary"
+                  size="mini"
+                  @click="handleExport"
+                >导出</el-button>
+              </el-col>
             </el-row>
 
             <el-table
@@ -646,7 +662,8 @@ export default {
       }).then(function() {
         return exportUser(queryParams)
       }).then(response => {
-        this.download(response.msg)
+        console.log(response)
+        this.download(response.data.list)
       }).catch(function() {})
     },
     /** 导入按钮操作 */

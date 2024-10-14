@@ -68,6 +68,14 @@
                         >删除
                         </el-button>
                     </el-col>
+                    <el-col :span="1.5">
+                      <el-button
+                        v-permisaction="['archive:house:export']"
+                        type="primary"
+                        size="mini"
+                        @click="handleExport"
+                      >导出</el-button>
+                    </el-col>
                 </el-row>
 
                 <el-table v-loading="loading" :data="houseList" @selection-change="handleSelectionChange">
@@ -377,9 +385,14 @@
 </template>
 
 <script>
-    import { addHouse, delHouse, getHouse, listHouse, updateHouse } from '@/api/archive/house';
+    import {
+      addHouse, delHouse, getHouse, listHouse,
+      exportHouse, updateHouse
+    } from '@/api/archive/house';
+    import { fmtDate } from '@/utils/index'
     import { getHukouGroup } from '@/api/archive/car';
     import { listTbMember } from '@/api/archive/member'
+    import excel from "@/utils/excel";
     import { getConfigKey } from '@/api/admin/sys-config';
     export default {
         name: 'archiveHouse',
@@ -604,7 +617,19 @@
             // 表单参数
             form: {},
             // 表单校验
-            rules: {}
+            rules: {},
+            // 导出表头信息
+            excelHead: {
+              'id': 'ID',
+              'hukouGroup': '户籍分组',
+              'hukouNo': '户籍编号',
+              'holder' : '户主姓名',
+              'phone' : '户主电话',
+              'status': '房屋状态',
+              'buildMethod': '建筑方式',
+              'buildPeriod': '建造年份',
+              'floorNum': '建筑楼层',
+            }
           }
         },
         created() {
@@ -737,6 +762,34 @@
                     this.title  = '修改房屋信息'
                     this.isEdit = true
                 })
+            },
+            /** 导出按钮操作 */
+            handleExport() {
+              const queryParams = this.queryParams
+              this.$confirm('确认导出所有数据?', '警告', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(function() {
+                return exportHouse(queryParams)
+              }).then(response => {
+                let headerKeys = Object.keys(this.excelHead) || [];
+                let headerValues = Object.values(this.excelHead) || [];
+                if (response.data.length) {
+                    const params = {
+                        title: headerValues,
+                        key: headerKeys,
+                        data: response.data,
+                        autoWidth: true,
+                        filename: "房屋列表" + fmtDate("Ymd", new Date()),
+                    };
+                    excel.export_array_to_excel(params);
+                } else {
+                    this.$Message.error("暂无数据,无法导出");
+                }
+              }).catch(function(e) {
+                console.log(e)
+              })
             },
             /** 提交按钮 */
             submitForm: function () {
