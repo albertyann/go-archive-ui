@@ -4,7 +4,36 @@
         <template #wrapper>
             <el-card class="box-card">
                 <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-
+                    <el-form-item label="车牌" prop="carNo">
+                      <el-input
+                        v-model="queryParams.carNo"
+                        placeholder="车牌"
+                        clearable
+                        size="small"
+                        style="width: 160px"
+                        @keyup.enter.native="handleQuery"
+                      />
+                    </el-form-item>
+                    <el-form-item label="车主" prop="ownerName">
+                      <el-input
+                        v-model="queryParams.ownerName"
+                        placeholder="车主"
+                        clearable
+                        size="small"
+                        style="width: 160px"
+                        @keyup.enter.native="handleQuery"
+                      />
+                    </el-form-item>
+                    <el-form-item label="电话" prop="ownerPhone">
+                      <el-input
+                        v-model="queryParams.ownerPhone"
+                        placeholder="电话"
+                        clearable
+                        size="small"
+                        style="width: 160px"
+                        @keyup.enter.native="handleQuery"
+                      />
+                    </el-form-item>
                     <el-form-item>
                         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
                         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -14,34 +43,23 @@
                 <el-row :gutter="10" class="mb8">
                     <el-col :span="1.5">
                         <el-button
-                                v-permisaction="['admin:tbCar:add']"
-                                type="primary"
-                                icon="el-icon-plus"
-                                size="mini"
-                                @click="handleAdd"
+                            v-permisaction="['admin:tbCar:add']"
+                            type="primary"
+                            icon="el-icon-plus"
+                            size="mini"
+                            @click="handleAdd"
                         >新增
                         </el-button>
                     </el-col>
                     <el-col :span="1.5">
                         <el-button
-                                v-permisaction="['admin:tbCar:edit']"
-                                type="success"
-                                icon="el-icon-edit"
-                                size="mini"
-                                :disabled="single"
-                                @click="handleUpdate"
+                            v-permisaction="['admin:tbCar:edit']"
+                            type="success"
+                            icon="el-icon-edit"
+                            size="mini"
+                            :disabled="single"
+                            @click="handleUpdate"
                         >修改
-                        </el-button>
-                    </el-col>
-                    <el-col :span="1.5">
-                        <el-button
-                                v-permisaction="['admin:tbCar:remove']"
-                                type="danger"
-                                icon="el-icon-delete"
-                                size="mini"
-                                :disabled="multiple"
-                                @click="handleDelete"
-                        >删除
                         </el-button>
                     </el-col>
                 </el-row>
@@ -51,39 +69,26 @@
                     <el-table-column label="车牌" align="center" prop="carNo" />
                     <el-table-column label="车主" align="center" prop="ownerName" />
                     <el-table-column label="联系电话" align="center" prop="ownerPhone" />
-                    <el-table-column label="品牌" align="center" prop="brand" />
                     <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                         <template slot-scope="scope">
-                         <el-popconfirm
-                           class="delete-popconfirm"
-                           title="确认要修改吗?"
-                           confirm-button-text="修改"
-                           @confirm="handleUpdate(scope.row)"
-                         >
-                           <el-button
-                             slot="reference"
-                             v-permisaction="['admin:tbCar:edit']"
-                             size="mini"
-                             type="text"
-                             icon="el-icon-edit"
-                           >修改
-                           </el-button>
-                         </el-popconfirm>
-                         <el-popconfirm
-                            class="delete-popconfirm"
-                            title="确认要删除吗?"
-                            confirm-button-text="删除"
-                            @confirm="handleDelete(scope.row)"
-                         >
-                            <el-button
-                              slot="reference"
-                              v-permisaction="['admin:tbCar:remove']"
-                              size="mini"
-                              type="text"
-                              icon="el-icon-delete"
-                            >删除
-                            </el-button>
-                         </el-popconfirm>
+                         <el-button
+                           slot="reference"
+                           v-permisaction="['admin:tbCar:edit']"
+                           size="mini"
+                           type="text"
+                           icon="el-icon-edit"
+                           @click="handleUpdate(scope.row)"
+                         >修改
+                         </el-button>
+                         <el-button
+                           slot="reference"
+                           v-permisaction="['admin:tbCar:remove']"
+                           size="mini"
+                           type="text"
+                           icon="el-icon-delete"
+                           @click="handleDelete(scope.row)"
+                         >删除
+                         </el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -101,15 +106,6 @@
                     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                       <el-form-item label="车牌" prop="carNo">
                           <el-input v-model="form.carNo" placeholder="车牌" />
-                      </el-form-item>
-                      <el-form-item label="照片" prop="image">
-                          <el-input v-model="form.image" placeholder="照片" />
-                      </el-form-item>
-                      <el-form-item label="品牌" prop="brand">
-                          <el-input v-model="form.brand" placeholder="品牌" />
-                      </el-form-item>
-                      <el-form-item label="价格区间" prop="priceRange">
-                          <el-input v-model="form.priceRange" placeholder="价格区间" />
                       </el-form-item>
                       <el-form-item label="落户时间" prop="registerTime">
                           <el-input v-model="form.registerTime" placeholder="落户时间" />
@@ -161,7 +157,9 @@
 
                 // 查询参数
                 queryParams: {
-                  car_no:'',
+                  carNo: '',
+                  ownerName: '',
+                  ownerPhone: '',
                   pageIndex: 1,
                   pageSize: 10,
                 },
@@ -197,9 +195,6 @@
 
                 id: undefined,
                 carNo: undefined,
-                image: undefined,
-                brand: undefined,
-                priceRange: undefined,
                 registerTime: undefined,
                 ownerName: undefined,
                 ownerPhone: undefined,
@@ -229,7 +224,7 @@
             handleAdd() {
                 this.reset()
                 this.open = true
-                this.title = '添加TbCar'
+                this.title = '添加车辆信息'
                 this.isEdit = false
             },
             // 多选框选中数据
@@ -246,7 +241,7 @@
                 getTbCar(id).then(response => {
                     this.form = response.data
                     this.open = true
-                    this.title = '修改TbCar'
+                    this.title = '修改车辆信息'
                     this.isEdit = true
                 })
             },
@@ -282,7 +277,7 @@
             handleDelete(row) {
                 var Ids = (row.id && [row.id]) || this.ids
 
-                this.$confirm('是否确认删除编号为"' + Ids + '"的数据项?', '警告', {
+                this.$confirm('是否确认删除"' + row.carNo + '"?', '警告', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'

@@ -2,23 +2,20 @@
   <div class="dashboard-editor-container">
     <el-row :gutter="12">
       <el-col :sm="24" :xs="24" :md="6" :xl="6" :lg="6" :style="{ marginBottom: '12px' }">
-        <chart-card title="户籍人数" total="7312">
-          <div>
-            <template>男<span> {{ '1234' }}</span></template>
-          </div>
-          <div>
-            <template>女<span> {{ '1234' }}</span></template>
+        <chart-card title="户籍人数" :total="stat.totalMember">
+          <div v-for="item in stat.genderStat">
+            <template>{{ item.gender }}<span> {{ item.num }}</span></template>
           </div>
         </chart-card>
       </el-col>
       <el-col :sm="24" :xs="24" :md="6" :xl="6" :lg="6" :style="{ marginBottom: '12px' }">
-        <chart-card title="户籍数" :total="612">
-          <template>数量 <span> {{ '1234' }}</span></template>
+        <chart-card title="户籍数" :total="stat.hukouCount">
+          <template>数量 <span> {{ stat.hukouCount }}</span></template>
         </chart-card>
       </el-col>
       <el-col :sm="24" :xs="24" :md="6" :xl="6" :lg="6" :style="{ marginBottom: '12px' }">
-        <chart-card title="车辆数量" :total="6560">
-          <template>数量 <span>60</span></template>
+        <chart-card title="车辆数量" :total="stat.carCount">
+          <template>数量 <span>{{ stat.carCount }}</span></template>
         </chart-card>
       </el-col>
       <el-col :sm="24" :xs="24" :md="6" :xl="6" :lg="6" :style="{ marginBottom: '12px' }">
@@ -32,7 +29,7 @@
     <el-card :bordered="false" :body-style="{padding: '0'}">
       <div class="salesCard">
         <el-tabs>
-          <el-tab-pane label="居民年龄分布">
+          <el-tab-pane label="数据分布">
             <el-row>
               <el-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
                 <bar :list="barData" title="年龄分布" />
@@ -57,19 +54,9 @@ import MiniBar from '@/components/MiniBar'
 import MiniProgress from '@/components/MiniProgress'
 import RankList from '@/components/RankList/index'
 import Bar from '@/components/Bar.vue'
+import { hukouStat } from '@/api/archive/car';
 
-const barData = []
 const barData2 = []
-for (let i = 0; i <= 10; i += 1) {
-  barData.push({
-    x: i == 10 ? `100+` : `${i * 10 + 1}~${(i+1) * 10}`,
-    y: Math.floor(Math.random() * 1000) + 200
-  })
-  barData2.push({
-    x: `${i + 1}月`,
-    y: Math.floor(Math.random() * 1000) + 200
-  })
-}
 
 const rankList = []
 for (let i = 0; i < 7; i++) {
@@ -92,12 +79,55 @@ export default {
   },
   data() {
     return {
-      barData,
+      barData: [],
       barData2,
-      rankList
+      rankList,
+      stat: {
+        carCount: 0,
+        totalMember: 0,
+        genderStat:{},
+        hukouCount: 0,
+      }
     }
   },
+  created() {
+    hukouStat().then(res => {
+      this.stat.genderStat = res.data.genderStat
+      this.stat.hukouCount = res.data.hukouCount
+      let total = 0;
+      this.stat.genderStat.forEach(x => {
+         total += x.num
+      })
+
+      // 人数
+      this.stat.totalMember = total;
+
+      // 车辆数
+      this.stat.carCount = res.data.carCount;
+
+      // 年龄分布
+      let ageStat = res.data.ageStat;
+      this.sortAgeStat(ageStat)
+      ageStat.forEach(row => {
+        this.barData.push({
+          x: row.cls,
+          y: row.num
+        })
+      })
+    })
+  },
   methods: {
+    sortAgeStat(list) {
+      list.sort((a, b) => {
+          let aRange = a.cls.split('~').map(Number);
+          let bRange = b.cls.split('~').map(Number);
+
+          if (aRange[0] === bRange[0]) {
+              return aRange[1] - bRange[1];
+          }
+          return aRange[0] - bRange[0];
+      });
+    }
   }
 }
 </script>

@@ -47,7 +47,15 @@ export function delTbCar(data) {
 
 export function getHukouGroup(data) {
     return request({
-        url: '/api/v1/hukou-group/list',
+        url: '/api/v1/hukou/group',
+        method: 'get',
+        data: data
+    })
+}
+
+export function hukouStat(data) {
+    return request({
+        url: '/api/v1/hukou/stat',
         method: 'get',
         data: data
     })

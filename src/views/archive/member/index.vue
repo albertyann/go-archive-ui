@@ -34,7 +34,8 @@
                     />
                   </el-form-item>
                   <el-form-item label="性别" prop="gender">
-                    <el-select v-model="queryParams.gender" size="small" style="width: 60px;">
+                    <el-select v-model="queryParams.gender" size="small" style="width: 100px;" placeholder="">
+                      <el-option label="" value="请选择" />
                       <el-option label="男" value="男" />
                       <el-option label="女" value="女" />
                     </el-select>
