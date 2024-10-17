@@ -227,6 +227,7 @@
                 this.title = '添加车辆信息'
                 this.isEdit = false
             },
+
             // 多选框选中数据
             handleSelectionChange(selection) {
                 this.ids = selection.map(item => item.id)
