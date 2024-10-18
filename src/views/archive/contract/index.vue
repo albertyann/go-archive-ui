@@ -1,4 +1,3 @@
-
 <template>
     <BasicLayout>
         <template #wrapper>
@@ -60,16 +59,6 @@
                             @click="handleUpdate"
                         > 修改 </el-button>
                     </el-col>
-                    <el-col :span="1.5">
-                        <el-button
-                            v-permisaction="['admin:contract:remove']"
-                            type="danger"
-                            icon="el-icon-delete"
-                            size="mini"
-                            :disabled="multiple"
-                            @click="handleDelete"
-                        > 删除 </el-button>
-                    </el-col>
                 </el-row>
 
                 <el-table v-loading="loading" :data="contractList" @selection-change="handleSelectionChange">
@@ -77,6 +66,8 @@
                     <el-table-column label="合同编号" align="center" prop="contractNumber" />
                     <el-table-column label="合同标题" align="center" prop="contractTitle" />
                     <el-table-column label="合同状态" align="center" prop="status" />
+                    <el-table-column label="甲方" align="center" prop="partyA" />
+                    <el-table-column label="乙方" align="center" prop="partyB" />
                     <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                         <template slot-scope="scope">
                          <el-button
@@ -110,7 +101,7 @@
                 />
 
                 <!-- 添加或修改对话框 -->
-                <el-dialog :title="title" :visible.sync="open" width="800px">
+                <el-dialog :title="title" :visible.sync="open" width="800px" @close="cleanFile">
                     <el-form ref="form" :model="form" :rules="rules" label-width="120px">
                         <el-form-item label="合同编号" prop="contractNumber" required>
                             <el-input v-model="form.contractNumber" placeholder="合同编号" />
@@ -139,11 +130,11 @@
                             <el-input v-model="form.partyB" placeholder="乙方" required />
                         </el-form-item>
                        <el-form-item label="合同生效日期" prop="effectiveDate" required>
-                            <el-date-picker
-                              v-model="form.effectiveDate"
-                              type="date"
-                              placeholder="合同生效日期">
-                            </el-date-picker>
+                          <el-date-picker
+                            v-model="form.effectiveDate"
+                            type="date"
+                            placeholder="合同生效日期">
+                          </el-date-picker>
                         </el-form-item>
                         <el-form-item label="合同到期日期" prop="expiryDate">
                             <el-date-picker
@@ -170,7 +161,6 @@
                             <el-upload ref="sys_app_logo"
                               :headers="headers"
                               :file-list="fileList"
-                              accept="image/png, image/jpeg"
                               :action="sys_app_logoAction" style="float:left"
                               :before-upload="sys_app_logoBeforeUpload"
                               list-type="picture-card"
@@ -254,6 +244,9 @@
             this.getList()
         },
         methods: {
+            cleanFile() {
+              this.fileList = []
+            },
             getList() {
                 this.loading = true
                 listContract(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
@@ -266,6 +259,7 @@
             // 取消按钮
             cancel() {
                 this.open = false
+                this.cleanFile()
                 this.reset()
             },
             // 表单重置
@@ -291,9 +285,9 @@
               this.fileOpen = false
             },
             sys_app_logoBeforeUpload(file) {
-              const isRightSize = file.size / 1024 / 1024 < 2
+              const isRightSize = file.size / 1024 / 1024 < 10
               if (!isRightSize) {
-                this.$message.error('文件大小超过 2MB')
+                this.$message.error('文件大小超过 10MB')
               }
               return isRightSize
             },
@@ -315,7 +309,7 @@
             handleAdd() {
                 this.reset()
                 this.open   = true
-                this.title  = '添加Contract'
+                this.title  = '添加合同'
                 this.isEdit = false
             },
             // 多选框选中数据
@@ -331,13 +325,21 @@
                 row.id || this.ids
                 getContract(id).then(response => {
                     this.form   = response.data
+                    this.form.files = response.data.files ? JSON.parse(response.data.files) : []
+                    this.form.files.forEach(f => {
+                      this.fileList.push({
+                        url: process.env.VUE_APP_BASE_API + f,
+                        uid: f
+                      })
+                    })
                     this.open   = true
-                    this.title  = '修改Contract'
+                    this.title  = '修改合同'
                     this.isEdit = true
                 })
             },
             /** 提交按钮 */
             submitForm: function () {
+                this.form.files = JSON.stringify(this.form.files)
                 this.$refs['form'].validate(valid => {
                     if (valid) {
                         if (this.form.id !== undefined) {

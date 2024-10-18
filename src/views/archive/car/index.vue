@@ -108,8 +108,12 @@
                           <el-input v-model="form.carNo" placeholder="车牌" />
                       </el-form-item>
                       <el-form-item label="落户时间" prop="registerTime">
-                          <el-input v-model="form.registerTime" placeholder="落户时间" />
-                      </el-form-item>
+                         <el-date-picker
+                           v-model="form.registerTime"
+                           type="date"
+                           placeholder="落户时间">
+                         </el-date-picker>
+                       </el-form-item>
                       <el-form-item label="车主" prop="ownerName">
                           <el-input v-model="form.ownerName" placeholder="车主" />
                       </el-form-item>
@@ -129,7 +133,6 @@
 
 <script>
     import {addTbCar, delTbCar, getTbCar, listTbCar, updateTbCar} from '@/api/archive/car'
-
     export default {
         name: 'archiveCar',
         components: {
@@ -192,13 +195,12 @@
             // 表单重置
             reset() {
                 this.form = {
-
-                id: undefined,
-                carNo: undefined,
-                registerTime: undefined,
-                ownerName: undefined,
-                ownerPhone: undefined,
-            }
+                    id: undefined,
+                    carNo: undefined,
+                    registerTime: undefined,
+                    ownerName: undefined,
+                    ownerPhone: undefined,
+                }
                 this.resetForm('form')
             },
             getImgList: function() {

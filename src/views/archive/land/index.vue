@@ -4,9 +4,10 @@
         <template #wrapper>
             <el-card class="box-card">
                 <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-
                     <el-form-item>
-                        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+                        <el-button type="primary" icon="el-icon-search" size="mini"
+                          @click="handleQuery">搜索
+                        </el-button>
                         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
                     </el-form-item>
                 </el-form>
@@ -14,72 +15,47 @@
                 <el-row :gutter="10" class="mb8">
                     <el-col :span="1.5">
                         <el-button
-                                v-permisaction="['archive:archiveLand:add']"
-                                type="primary"
-                                icon="el-icon-plus"
-                                size="mini"
-                                @click="handleAdd"
+                            v-permisaction="['admin:tbLand:add']"
+                            type="primary"
+                            icon="el-icon-plus"
+                            size="mini"
+                            @click="handleAdd"
                         >新增
                         </el-button>
                     </el-col>
                     <el-col :span="1.5">
                         <el-button
-                                v-permisaction="['archive:archiveLand:edit']"
-                                type="success"
-                                icon="el-icon-edit"
-                                size="mini"
-                                :disabled="single"
-                                @click="handleUpdate"
+                            v-permisaction="['admin:tbLand:edit']"
+                            type="success"
+                            icon="el-icon-edit"
+                            size="mini"
+                            :disabled="single"
+                            @click="handleUpdate"
                         >修改
-                        </el-button>
-                    </el-col>
-                    <el-col :span="1.5">
-                        <el-button
-                                v-permisaction="['archive:archiveLand:remove']"
-                                type="danger"
-                                icon="el-icon-delete"
-                                size="mini"
-                                :disabled="multiple"
-                                @click="handleDelete"
-                        >删除
                         </el-button>
                     </el-col>
                 </el-row>
 
-                <el-table v-loading="loading" :data="archiveLandList" @selection-change="handleSelectionChange">
+                <el-table v-loading="loading" :data="tbLandList" @selection-change="handleSelectionChange">
                     <el-table-column type="selection" width="55" align="center"/>
                     <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                         <template slot-scope="scope">
-                         <el-popconfirm
-                           class="delete-popconfirm"
-                           title="确认要修改吗?"
-                           confirm-button-text="修改"
-                           @confirm="handleUpdate(scope.row)"
-                         >
-                           <el-button
-                             slot="reference"
-                             v-permisaction="['archive:archiveLand:edit']"
-                             size="mini"
-                             type="text"
-                             icon="el-icon-edit"
-                           >修改
-                           </el-button>
-                         </el-popconfirm>
-                         <el-popconfirm
-                            class="delete-popconfirm"
-                            title="确认要删除吗?"
-                            confirm-button-text="删除"
-                            @confirm="handleDelete(scope.row)"
-                         >
-                            <el-button
-                              slot="reference"
-                              v-permisaction="['archive:archiveLand:remove']"
-                              size="mini"
-                              type="text"
-                              icon="el-icon-delete"
-                            >删除
-                            </el-button>
-                         </el-popconfirm>
+                         <el-button
+                           slot="reference"
+                           v-permisaction="['admin:tbLand:edit']"
+                           size="mini"
+                           type="text"
+                           icon="el-icon-edit"
+                           @click="handleUpdate(scope.row)"
+                         > 修改 </el-button>
+                         <el-button
+                           slot="reference"
+                           v-permisaction="['admin:tbLand:remove']"
+                           size="mini"
+                           type="text"
+                           icon="el-icon-delete"
+                           @click="handleDelete(scope.row)"
+                         > 删除 </el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -93,21 +69,38 @@
                 />
 
                 <!-- 添加或修改对话框 -->
-                <el-dialog :title="title" :visible.sync="open" width="500px">
-                    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-
-                                    <el-form-item label="地块编号" prop="code">
-                                        <el-input v-model="form.code" placeholder="地块编号"
-                                                      />
-                                    </el-form-item>
-                                    <el-form-item label="面积" prop="area">
-                                        <el-input v-model="form.area" placeholder="面积"
-                                                      />
-                                    </el-form-item>
-                                    <el-form-item label="户主" prop="memberId">
-                                        <el-input v-model="form.memberId" placeholder="户主"
-                                                      />
-                                    </el-form-item>
+                <el-dialog :title="title" :visible.sync="open" width="800px">
+                    <el-form ref="form" :model="form" :rules="rules" label-width="140px">
+                      <el-form-item label="户主" prop="holder">
+                          <el-input v-model="form.holder" placeholder="户主" />
+                      </el-form-item>
+                      <el-form-item label="自留地" prop="selfLand">
+                          <el-input v-model="form.selfLand" placeholder="自留地" />
+                      </el-form-item>
+                      <el-form-item label="1996年应得面积" prop="dueArea">
+                          <el-input v-model="form.dueArea" placeholder="1996年应得面积" />
+                      </el-form-item>
+                      <el-form-item label="2023年实际面积" prop="actualArea">
+                          <el-input v-model="form.actualArea" placeholder="2023年实际面积" />
+                      </el-form-item>
+                      <el-form-item label="2018年确权面积" prop="confirmedArea">
+                          <el-input v-model="form.confirmedArea" placeholder="2018年确权面积" />
+                      </el-form-item>
+                      <el-form-item label="确权后被征用面积" prop="expropriatedArea">
+                          <el-input v-model="form.expropriatedArea" placeholder="确权后被征用面积" />
+                      </el-form-item>
+                      <el-form-item label="流入面积" prop="inflowArea">
+                          <el-input v-model="form.inflowArea" placeholder="流入面积" />
+                      </el-form-item>
+                      <el-form-item label="流出面积" prop="outflowArea">
+                          <el-input v-model="form.outflowArea" placeholder="流出面积" />
+                      </el-form-item>
+                      <el-form-item label="承包面积" prop="contractedArea">
+                          <el-input v-model="form.contractedArea" placeholder="承包面积" />
+                      </el-form-item>
+                      <el-form-item label="实际种植面积" prop="actualPlantingArea">
+                          <el-input v-model="form.actualPlantingArea" placeholder="实际种植面积" />
+                      </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer">
                         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -123,7 +116,7 @@
     import {addTbLand, delTbLand, getTbLand, listTbLand, updateTbLand} from '@/api/archive/land'
 
     export default {
-        name: 'archiveLand',
+        name: 'TbLand',
         components: {
         },
         data() {
@@ -145,9 +138,7 @@
                 isEdit: false,
                 // 类型数据字典
                 typeOptions: [],
-                archiveLandList: [],
-
-                // 关系表类型
+                tbLandList: [],
 
                 // 查询参数
                 queryParams: {
@@ -170,7 +161,7 @@
             getList() {
                 this.loading = true
                 listTbLand(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-                        this.archiveLandList = response.data.list
+                        this.tbLandList = response.data.list
                         this.total = response.data.count
                         this.loading = false
                     }
@@ -184,12 +175,18 @@
             // 表单重置
             reset() {
                 this.form = {
-
-                id: undefined,
-                code: undefined,
-                area: undefined,
-                memberId: undefined,
-            }
+                    id: undefined,
+                    holder: undefined,
+                    selfLand: undefined,
+                    dueArea: undefined,
+                    actualArea: undefined,
+                    confirmedArea: undefined,
+                    expropriatedArea: undefined,
+                    inflowArea: undefined,
+                    outflowArea: undefined,
+                    contractedArea: undefined,
+                    actualPlantingArea: undefined,
+                }
                 this.resetForm('form')
             },
             getImgList: function() {
@@ -215,7 +212,7 @@
             handleAdd() {
                 this.reset()
                 this.open = true
-                this.title = '添加archiveLand'
+                this.title = '添加土地信息'
                 this.isEdit = false
             },
             // 多选框选中数据
@@ -232,7 +229,7 @@
                 getTbLand(id).then(response => {
                     this.form = response.data
                     this.open = true
-                    this.title = '修改archiveLand'
+                    this.title = '修改土地信息'
                     this.isEdit = true
                 })
             },
