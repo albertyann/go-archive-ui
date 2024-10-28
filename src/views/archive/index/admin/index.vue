@@ -19,9 +19,8 @@
         </chart-card>
       </el-col>
       <el-col :sm="24" :xs="24" :md="6" :xl="6" :lg="6" :style="{ marginBottom: '12px' }">
-        <chart-card title="耕地面积" total="23478亩">
-          <template>农业用地 <span>34121</span></template>
-          <template>非农用地 <span>34121</span></template>
+        <chart-card title="承包面积" :total="stat.landArea">
+          <template>农业用地 <span>{{ stat.landArea }}</span></template>
         </chart-card>
       </el-col>
     </el-row>
@@ -34,9 +33,9 @@
               <el-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
                 <bar :list="barData" title="年龄分布" />
               </el-col>
-              <!-- <el-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
-                <rank-list title="门店销售排行榜" :list="rankList" />
-              </el-col> -->
+              <el-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
+                <bar :list="landData" title="土地分布" />
+              </el-col>
             </el-row>
           </el-tab-pane>
         </el-tabs>
@@ -54,7 +53,7 @@ import MiniBar from '@/components/MiniBar'
 import MiniProgress from '@/components/MiniProgress'
 import RankList from '@/components/RankList/index'
 import Bar from '@/components/Bar.vue'
-import { hukouStat } from '@/api/archive/car';
+import { hukouStat } from '@/api/archive/stat';
 
 const barData2 = []
 
@@ -80,13 +79,14 @@ export default {
   data() {
     return {
       barData: [],
-      barData2,
+      landData: [],
       rankList,
       stat: {
         carCount: 0,
         totalMember: 0,
         genderStat:{},
         hukouCount: 0,
+        landArea:0
       }
     }
   },
@@ -94,6 +94,7 @@ export default {
     hukouStat().then(res => {
       this.stat.genderStat = res.data.genderStat
       this.stat.hukouCount = res.data.hukouCount
+      this.stat.landArea   = res.data.landArea
       let total = 0;
       this.stat.genderStat.forEach(x => {
          total += x.num
@@ -112,6 +113,24 @@ export default {
         this.barData.push({
           x: row.cls,
           y: row.num
+        })
+      })
+
+      // 土地分布
+      let landGroupStat = res.data.landGroupStat;
+      landGroupStat.sort((a, b) => {
+        if (a.group > b.group) {
+          return 1
+        }
+        if (a.group < b.group) {
+          return -1
+        }
+        return 0
+      })
+      landGroupStat.forEach(row => {
+        this.landData.push({
+          x: row.group + ' 组',
+          y: row.area
         })
       })
     })
