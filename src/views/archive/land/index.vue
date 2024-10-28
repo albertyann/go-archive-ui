@@ -64,47 +64,47 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="自留地" prop="selfLand">
-                <el-input v-model="form.selfLand" placeholder="自留地" />
+                <el-input-number v-model="form.selfLand" placeholder="自留地" controls-position="right" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="1996年应得面积" prop="dueArea">
-                <el-input v-model="form.dueArea" placeholder="1996年应得面积" />
+                <el-input-number v-model="form.dueArea" placeholder="1996年应得面积" controls-position="right" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="2023年实际面积" prop="actualArea">
-                <el-input v-model="form.actualArea" placeholder="2023年实际面积" />
+                <el-input-number v-model="form.actualArea" placeholder="2023年实际面积" controls-position="right" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="2018年确权面积" prop="confirmedArea">
-                <el-input v-model="form.confirmedArea" placeholder="2018年确权面积" />
+                <el-input-number v-model="form.confirmedArea" placeholder="2018年确权面积" controls-position="right" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="确权后被征用面积" prop="expropriatedArea">
-                <el-input v-model="form.expropriatedArea" placeholder="确权后被征用面积" />
+                <el-input-number v-model="form.expropriatedArea" placeholder="确权后被征用面积" controls-position="right" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="流入面积" prop="inflowArea">
-                <el-input v-model="form.inflowArea" placeholder="流入面积" />
+                <el-input-number v-model="form.inflowArea" placeholder="流入面积" controls-position="right" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="流出面积" prop="outflowArea">
-                <el-input v-model="form.outflowArea" placeholder="流出面积" />
+                <el-input-number v-model="form.outflowArea" placeholder="流出面积" controls-position="right" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="承包面积" prop="contractedArea">
-                <el-input v-model="form.contractedArea" placeholder="承包面积" />
+                <el-input-number v-model="form.contractedArea" placeholder="承包面积" controls-position="right" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="实际种植面积" prop="actualPlantingArea">
-                <el-input v-model="form.actualPlantingArea" placeholder="实际种植面积" />
+                <el-input-number v-model="form.actualPlantingArea" placeholder="实际种植面积" controls-position="right" :min="0" />
               </el-form-item>
             </el-col>
           </el-form>
@@ -264,17 +264,17 @@
       // 表单重置
       reset() {
         this.form = {
-          id: undefined,
-          holder: undefined,
-          selfLand: undefined,
-          dueArea: undefined,
-          actualArea: undefined,
-          confirmedArea: undefined,
-          expropriatedArea: undefined,
-          inflowArea: undefined,
-          outflowArea: undefined,
-          contractedArea: undefined,
-          actualPlantingArea: undefined,
+          id: 0,
+          holder: '',
+          selfLand: 0,
+          dueArea: 0,
+          actualArea: 0,
+          confirmedArea: 0,
+          expropriatedArea: 0,
+          inflowArea: 0,
+          outflowArea: 0,
+          contractedArea: 0,
+          actualPlantingArea: 0,
         }
         this.resetForm('form')
       },
