@@ -651,7 +651,6 @@
             layers: [lay]
           };
           let map = new T.Map('showMapDiv', config);
-          console.log(this.detail)
           let lnglat = new T.LngLat(this.detail.longitude, this.detail.latitude);
           map.centerAndZoom(lnglat, 18);
 

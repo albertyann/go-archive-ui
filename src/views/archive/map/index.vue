@@ -29,7 +29,7 @@
                         "SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0" +
                         "&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles" +
                         "&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=cbfe568d6062fdbb2efca8c9ea29d32b";
-        let lay = new T.TileLayer(imageURL, {minZoom: 1, maxZoom: 18});
+        let lay = new T.TileLayer(imageURL, {minZoom: 12, maxZoom: 18});
         var config = {layers: [lay]};
         let map = new T.Map('mapDiv', config);
         this.map = map;
