@@ -86,7 +86,7 @@
         </el-table>
 
         <pagination
-          v-show="total>0"
+          v-show="total > 0"
           :total="total"
           :page.sync="queryParams.pageIndex"
           :limit.sync="queryParams.pageSize"
@@ -105,29 +105,54 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="1996年人口数" prop="population1996">
-                    <el-input-number v-model="form.population" style="width: 152px;" placeholder="1996年人口数" controls-position="right" />
+                    <el-input-number
+                      v-model="form.population"
+                      style="width: 152px;"
+                      placeholder="1996年人口数"
+                      controls-position="right"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="独生子女数" prop="childrenCount">
-                    <el-input-number v-model="form.childrenCount" style="width: 152px;" placeholder="独生子女数" controls-position="right" />
+                    <el-input-number
+                      v-model="form.childrenCount"
+                      style="width: 152px;"
+                      placeholder="独生子女数"
+                      controls-position="right"
+                    />
                   </el-form-item>
                 </el-col>
               </el-row>
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="自留地面积" prop="selfLand">
-                    <el-input-number v-model="form.selfLand" placeholder="自留地面积(m²)" />
+                    <el-input-number
+                      v-model="form.selfLand"
+                      placeholder="自留地面积(m²)"
+                      :controls="false"
+                      style="width: 152px;"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="宅地面积" prop="homestead">
-                    <el-input v-model="form.homestead" placeholder="宅地面积(m²)" />
+                    <el-input-number
+                      v-model="form.homestead"
+                      placeholder="宅地面积(m²)"
+                      :controls="false"
+                      style="width: 152px;"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="其他面积" prop="otherArea">
-                    <el-input v-model="form.otherArea" placeholder="其他面积(m²)" />
+                    <el-input-number
+                      v-model="form.otherArea"
+                      placeholder="其他面积(m²)"
+                      :controls="false"
+                      style="width: 152px;"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="18">
@@ -150,22 +175,38 @@
                         <th>备注</th>
                       </tr>
                       <tr>
-                        <td><el-input v-model="form.actualArea" placeholder="面积" style="width:60px" /></td>
+                        <td><el-input-number
+                          v-model="form.actualArea"
+                          placeholder="面积"
+                          style="width:60px"
+                          :controls="false"
+                        />
+                        </td>
                         <td>
-                          <el-input v-model="form.actualLength" placeholder="长" style="width:60px" />
-                          <el-input v-model="form.actualWidth" placeholder="宽" style="width:60px" />
+                          <el-input-number
+                            v-model="form.actualLength"
+                            placeholder="长"
+                            style="width:60px"
+                            :controls="false"
+                          />
+                          <el-input-number
+                            v-model="form.actualWidth"
+                            placeholder="宽"
+                            style="width:60px"
+                            :controls="false"
+                          />
                           <el-button
                             size="small"
                             type="primary"
                             circle
                             style="margin-left: 3px;"
-                            @click="form.actualArea=form.actualLength*form.actualWidth"
+                            @click="calcArea('actualArea', form.actualLength, form.actualWidth)"
                           >=</el-button>
                         </td>
                         <td>
                           <el-select v-model="form.actualFlow" placeholder="是否流转" style="width:105px">
-                            <el-option label="否" value="0" />
-                            <el-option label="是" value="1" />
+                            <el-option label="否" :value="0" />
+                            <el-option label="是" :value="1" />
                           </el-select>
                         </td>
                         <td>
@@ -188,16 +229,38 @@
                         <th>备注</th>
                       </tr>
                       <tr>
-                        <td><el-input v-model="form.personArea" placeholder="面积" style="width:60px" /></td>
+                        <td><el-input-number
+                          v-model="form.personArea"
+                          placeholder="面积"
+                          style="width:60px"
+                          :controls="false"
+                        />
+                        </td>
                         <td>
-                          <el-input v-model="form.personLength" placeholder="长" style="width:60px" />
-                          <el-input v-model="form.personWidth" placeholder="宽" style="width:60px" />
-                          <el-button size="small" type="primary" circle style="margin-left: 3px;">=</el-button>
+                          <el-input-number
+                            v-model="form.personLength"
+                            placeholder="长"
+                            style="width:60px"
+                            :controls="false"
+                          />
+                          <el-input-number
+                            v-model="form.personWidth"
+                            placeholder="宽"
+                            style="width:60px"
+                            :controls="false"
+                          />
+                          <el-button
+                            size="small"
+                            type="primary"
+                            circle
+                            style="margin-left: 3px;"
+                            @click="calcArea('personArea', form.personLength, form.personWidth)"
+                          >=</el-button>
                         </td>
                         <td>
                           <el-select v-model="form.personFlow" placeholder="是否流转" style="width:105px">
-                            <el-option label="否" value="0" />
-                            <el-option label="是" value="1" />
+                            <el-option label="否" :value="0" />
+                            <el-option label="是" :value="1" />
                           </el-select>
                         </td>
                         <td>
@@ -224,29 +287,54 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="权证面积" prop="certificateArea">
-                    <el-input v-model="form.certificateArea" placeholder="权证面积(m²)" />
+                    <el-input-number
+                      v-model="form.certificateArea"
+                      placeholder="权证面积(m²)"
+                      :controls="false"
+                      style="width: 152px;"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="合计承包地面积" prop="totalContractedArea">
-                    <el-input v-model="form.totalContractedArea" placeholder="合计承包地面积(m²)" />
+                    <el-input-number
+                      v-model="form.totalContractedArea"
+                      placeholder="合计承包地面积(m²)"
+                      :controls="false"
+                      style="width: 152px;"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="合计土地面积" prop="totalLandArea">
-                    <el-input v-model="form.totalLandArea" placeholder="合计土地面积(m²)" />
+                    <el-input-number
+                      v-model="form.totalLandArea"
+                      placeholder="合计土地面积(m²)"
+                      :controls="false"
+                      style="width: 152px;"
+                    />
                   </el-form-item>
                 </el-col>
               </el-row>
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="土地使用面积" prop="totalUsedArea">
-                    <el-input v-model="form.totalUsedArea" placeholder="土地使用面积(m²)" />
+                    <el-input-number
+                      v-model="form.totalUsedArea"
+                      placeholder="土地使用面积(m²)"
+                      :controls="false"
+                      style="width: 152px;"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="失地人数" prop="lostLandPerson">
-                    <el-input-number v-model="form.lostLandPerson" placeholder="失地人数" controls-position="right" style="width: 152px;" />
+                    <el-input-number
+                      v-model="form.lostLandPerson"
+                      placeholder="失地人数"
+                      controls-position="right"
+                      style="width: 152px;"
+                    />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -320,6 +408,9 @@ export default {
     this.getList()
   },
   methods: {
+    calcArea(x, a, b) {
+      this.form[x] = (a * b).toFixed(4)
+    },
     /** 查询参数列表 */
     getList() {
       this.loading = true
@@ -407,10 +498,18 @@ export default {
     handleUpdate(row) {
       this.reset()
       const id =
-          row.id || this.ids
+        row.id || this.ids
       getFarmerLand(id).then(response => {
         this.form = response.data
-        console.log(this.form)
+        if (!this.form.contractedLands || this.form.contractedLands.length <= 0) {
+          this.form.contractedLands = Array(6).fill().map(() => ({
+            area: undefined,
+            length: undefined,
+            width: undefined,
+            remarks: '',
+            flow: 0
+          }))
+        }
         this.open = true
         this.title = '修改农户土地信息表'
         this.isEdit = true
@@ -469,7 +568,7 @@ export default {
         } else {
           this.msgError(response.msg)
         }
-      }).catch(function() {})
+      }).catch(function() { })
     }
   }
 }
