@@ -58,11 +58,12 @@
 
                 let content = '户主: ' + house.holder +'<br/>' +
                               '电话: ' + house.holderPhone +'<br/>' +
-                              '状态: ' + house.status +'<br/>' +
                               '面积: ' + house.area +' 平米 <br/>'
                 infoWin.setContent(content);
                 //向地图上添加信息窗口
-                this.map.addOverLay(infoWin);
+                marker.addEventListener("click", function () {
+                    marker.openInfoWindow(infoWin);
+                });
               }
             })
           }

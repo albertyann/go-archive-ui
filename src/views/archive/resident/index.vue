@@ -67,6 +67,9 @@
 
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
+              <el-button size="mini" type="text" icon="el-icon-document"
+                @click="openView = true">查看
+              </el-button>
               <el-button v-permisaction="['archive:tbMember:edit']" size="mini" type="text" icon="el-icon-edit"
                 @click="handleUpdate(scope.row)">修改
               </el-button>
@@ -267,6 +270,8 @@
             <el-button type="primary" @click="submitForm">确定</el-button>
           </div>
         </el-drawer>
+
+        <DetailView :openView="openView" @handleClose="openView = $event"></DetailView>
       </el-card>
     </template>
   </BasicLayout>
@@ -285,9 +290,13 @@
     fmtDate
   } from '@/utils/index'
   import excel from "@/utils/excel";
+  import DetailView from './DetailView'
+
   export default {
     name: 'archiveMember',
-    components: {},
+    components: {
+      DetailView
+    },
     data() {
       return {
         // 遮罩层
@@ -304,6 +313,7 @@
         title: '',
         // 是否显示弹出层
         open: false,
+        openView: false,
         isEdit: false,
         // 类型数据字典
         typeOptions: [],

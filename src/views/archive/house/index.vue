@@ -45,13 +45,13 @@
           <el-table-column label="房屋状态" align="center" prop="status" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <el-button v-permisaction="['archive:house:edit']" size="mini" type="text" icon="el-icon-document"
+              <el-button size="mini" type="text" icon="el-icon-document"
                 @click="showDetail(scope.row)">查看</el-button>
-              <el-button v-permisaction="['archive:house:edit']" size="mini" type="text" icon="el-icon-edit"
+              <el-button size="mini" type="text" icon="el-icon-edit"
                 @click="handleUpdate(scope.row)">修改</el-button>
               <el-popconfirm class="delete-popconfirm" title="确认要删除吗?" confirm-button-text="删除"
                 @confirm="handleDelete(scope.row)">
-                <el-button slot="reference" v-permisaction="['archive:house:remove']" size="mini" type="text"
+                <el-button slot="reference" size="mini" type="text"
                   icon="el-icon-delete">删除
                 </el-button>
               </el-popconfirm>
