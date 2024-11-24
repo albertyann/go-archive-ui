@@ -160,6 +160,11 @@
                     <el-input v-model="form.remarks" type="textarea" placeholder="备注" />
                   </el-form-item>
                 </el-col>
+                <el-col :span="18">
+                  <el-form-item label="应得坐园地面积" prop="remarks">
+                    <el-input-number v-model="form.dueArea" placeholder="应得坐园地面积" style="width: 152px;" :controls="false"/> m²（合计）
+                  </el-form-item>
+                </el-col>
               </el-row>
             </el-card>
 
@@ -270,6 +275,11 @@
                     </table>
                   </el-form-item>
                 </el-col>
+                <el-col :span="18">
+                  <el-form-item label="坐园地差额" prop="remarks">
+                    <el-input-number v-model="form.dueArea - form.actualArea" style="width: 152px;" :controls="false"/> m²
+                  </el-form-item>
+                </el-col>
               </el-row>
             </el-card>
 
@@ -317,6 +327,16 @@
                 </el-col>
               </el-row>
               <el-row>
+                <el-col :span="8">
+                  <el-form-item label="流转面积合计" prop="outflowArea">
+                    <el-input-number
+                      v-model="form.outflowArea"
+                      placeholder="流转面积合计(m²)"
+                      :controls="false"
+                      style="width: 152px;"
+                    />
+                  </el-form-item>
+                </el-col>
                 <el-col :span="8">
                   <el-form-item label="土地使用面积" prop="totalUsedArea">
                     <el-input-number
