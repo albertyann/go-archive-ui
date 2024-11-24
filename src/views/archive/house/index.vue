@@ -404,6 +404,7 @@
         // 类型数据字典
         typeOptions: [],
         familyResult: [],
+        familyMember: [],
         floorOptions: [{
             "value": "1",
             "label": "一层",
@@ -579,9 +580,6 @@
             "label": "其它",
           }
         ],
-
-        // 家庭成员
-        familyMember: [],
 
         // 查询参数
         queryParams: {

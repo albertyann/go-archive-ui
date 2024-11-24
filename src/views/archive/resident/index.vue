@@ -33,6 +33,7 @@
             <el-input v-model="queryParams.age" placeholder="年龄" clearable size="small" style="width: 80px"
               @keyup.enter.native="handleQuery" />
           </el-form-item>
+
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
             <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -174,6 +175,27 @@
                   </el-select>
                 </el-form-item>
               </el-col>
+              <div v-if="form.isHolder == 1">
+                <el-col :span="24">
+                  <el-form-item label="户籍成员" prop="status">
+                    <el-button @click="openDialog = true" size="mini">添 加</el-button>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item>
+                    <el-table :data="familyMember">
+                      <el-table-column label="姓名" align="center" prop="name" />
+                      <el-table-column label="年龄" align="center" prop="age" />
+                      <el-table-column label="身份证" align="center" prop="idCard" />
+                      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+                        <template slot-scope="scope">
+                          <el-button type="text" @click="handleMemberDelete(scope.row)" size="mini">删除</el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </el-form-item>
+                </el-col>
+              </div>
             </el-row>
 
             <el-row>
@@ -264,12 +286,75 @@
                 <el-input v-model="form.medicalInsurance" placeholder="请输入医疗保险" :maxlength="100" show-word-limit
                   clearable :style="{width: '100%'}"></el-input>
               </el-form-item>
+              <el-from-item>
+                <el-col :span="24">
+                  <el-form-item label="车辆信息" prop="status">
+                    <el-button @click="handleAddCar" size="mini">添 加</el-button>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item label="">
+                    <el-table :data="carList">
+                      <el-table-column label="车牌" align="center">
+                        <template slot-scope="scope">
+                          <el-input v-if="scope.row.id==0" v-model="scope.row.carNo" placeholder="车牌"></el-input>
+                          <span v-if="scope.row.id>0">{{ scope.row.carNo }}</span>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="车主" align="center">
+                        <template slot-scope="scope">
+                          <el-input v-if="scope.row.id==0" v-model="scope.row.ownerName" placeholder="车主"></el-input>
+                          <span v-if="scope.row.id>0">{{ scope.row.ownerName }}</span>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="联系电话" align="center">
+                        <template slot-scope="scope">
+                          <el-input v-if="scope.row.id==0" v-model="scope.row.ownerPhone" placeholder="联系电话" ></el-input>
+                          <span v-if="scope.row.id>0">{{ scope.row.ownerPhone }}</span>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+                        <template slot-scope="scope">
+                          <el-button size="mini" type="text" @click="handleCarDelete(scope.row)">删除</el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </el-form-item>
+                </el-col>
+              </el-from-item>
             </el-row>
           </el-form>
           <div class="demo-drawer__footer">
             <el-button type="primary" @click="submitForm">确定</el-button>
           </div>
         </el-drawer>
+
+        <!-- 添加或修改对话框 -->
+        <el-dialog title="添加家庭成员" :visible.sync="openDialog" width="800px">
+          <el-form ref="familyForm" :model="familyParams" :inline="true" label-width="68px">
+            <el-form-item label="姓名" prop="name">
+              <el-input v-model="familyParams.name" placeholder="姓名" />
+            </el-form-item>
+            <el-form-item label="电话" prop="phone">
+              <el-input v-model="familyParams.phone" placeholder="电话" />
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" icon="el-icon-search" @click="familyQuery">查找</el-button>
+            </el-form-item>
+          </el-form>
+
+          <el-table v-loading="loading" :data="familyResult" @selection-change="handleSelectionChange">
+            <el-table-column label="姓名" align="center" prop="name" />
+            <el-table-column label="年龄" align="center" prop="age" />
+            <el-table-column label="性别" align="center" prop="gender" />
+            <el-table-column label="户主" align="center" prop="houseHolderRelation" />
+            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+              <template slot-scope="scope">
+                <el-button size="mini" type="text" @click="addFamilyMember(scope.row)">添加</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-dialog>
 
         <DetailView :openView="openView" @handleClose="openView = $event"></DetailView>
       </el-card>
@@ -285,7 +370,14 @@
     listTbMember,
     updateTbMember,
     exportMember,
+    getFamilyMember,
+    delFamilyMember,
   } from '@/api/archive/member'
+  import {
+    addTbCar,
+    delTbCar,
+    getHukouCar,
+  } from '@/api/archive/car'
   import {
     fmtDate
   } from '@/utils/index'
@@ -319,7 +411,13 @@
         typeOptions: [],
         tbMemberList: [],
         sexOptions: [],
-
+        openDialog: false,
+        familyResult: [],
+        familyMember: [],
+        familyParams: {
+          name: '',
+          phone: '',
+        },
         genderOptions: [{
           "label": "男",
           "value": "男"
@@ -585,7 +683,8 @@
           'married': '婚姻状况',
           'pension': '养老保险',
           'medicalInsurance': '医疗保险'
-        }
+        },
+        carList:[]
       }
     },
     created() {
@@ -603,6 +702,63 @@
           this.total = response.data.count
           this.loading = false
         })
+      },
+      getCarList() {
+        getHukouCar(this.form.id).then(response => {
+          this.carList = response.data;
+        })
+      },
+      getFamilyList() {
+        getFamilyMember(this.form.id).then(response => {
+          this.familyMember = response.data;
+        })
+      },
+      handleAddCar() {
+        this.carList.push({
+          id: 0,
+          carNo: '',
+          ownerName: this.form.name,
+          ownerPhone: this.form.phone,
+        })
+      },
+      handleCarAdd(item) {
+        if (item.carNo != undefined && item.carNo.length > 0) {
+          item.hukouId = this.form.id+"";
+          addTbCar(item).then(response => {
+            if (response.code === 200) {
+              this.msgSuccess(response.msg)
+              this.getCarList()
+            } else {
+              this.msgError(response.msg)
+            }
+          })
+        }
+      },
+      handleCarDelete(item) {
+        if (item.id > 0) {
+          delTbCar({ 'ids': [item.id] }).then(res => {
+            this.getCarList()
+          })
+        } else {
+          this.carList.pop(item)
+        }
+      },
+      familyQuery() {
+        listTbMember(this.familyParams).then((res) => {
+          this.familyResult = res.data.list
+        })
+      },
+      addFamilyMember(item) {
+        this.familyMember.push(item)
+      },
+      handleMemberDelete(item) {
+        this.familyMember.pop(item)
+        console.log(item)
+        if (item.id > 0) {
+          delFamilyMember({'id': item.id}).then(res => {
+            console.log(res)
+          })
+        }
       },
       // 取消按钮
       cancel() {
@@ -644,8 +800,6 @@
       fileClose: function() {
         this.fileOpen = false
       },
-      // 关系
-      // 文件
       /** 搜索按钮操作 */
       handleQuery() {
         this.queryParams.pageIndex = 1
@@ -673,13 +827,15 @@
       /** 修改按钮操作 */
       handleUpdate(row) {
         this.reset()
-        const id =
-          row.id || this.ids
+        const id = row.id || this.ids
         getTbMember(id).then(response => {
           this.form = response.data
           this.open = true
           this.title = '修改人员信息'
           this.isEdit = true
+
+          this.getCarList()
+          this.getFamilyList()
         })
       },
       /** 导出按钮操作 */
@@ -714,6 +870,9 @@
       submitForm: function() {
         this.$refs['form'].validate(valid => {
           if (valid) {
+            this.form.carList = this.carList;
+            this.form.familyMember = this.familyMember;
+
             if (this.form.id !== undefined) {
               delete this.form.age
               updateTbMember(this.form).then(response => {
