@@ -162,31 +162,6 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="24">
-                <el-form-item label="户籍成员" prop="status">
-                  <el-button @click="openDialog = true" size="mini">添 加</el-button>
-                </el-form-item>
-              </el-col>
-              <el-col :span="24">
-                <el-form-item>
-                  <el-table :data="familyMember">
-                    <el-table-column label="姓名" align="center" prop="name" />
-                    <el-table-column label="年龄" align="center" prop="age" />
-                    <el-table-column label="电话" align="center" prop="phone" />
-                    <el-table-column label="户主" align="center" prop="houseHolderRelation" />
-                    <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-                      <template slot-scope="scope">
-                        <el-popconfirm class="delete-popconfirm" title="确认要删除吗?" confirm-button-text="删除"
-                          @confirm="handleDelete(scope.row)">
-                          <el-button slot="reference" v-permisaction="['archive:house:remove']" size="mini" type="text"
-                            icon="el-icon-delete">删除
-                          </el-button>
-                        </el-popconfirm>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </el-form-item>
-              </el-col>
               <el-col :span="12">
                 <el-form-item label="地图标注" prop="longitude">
                   {{ form.longitude +", "+ form.latitude }}

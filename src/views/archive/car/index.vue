@@ -36,10 +36,10 @@
           <el-table-column label="联系电话" align="center" prop="ownerPhone" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <el-button slot="reference" v-permisaction="['admin:tbCar:edit']" size="mini" type="text"
+              <el-button slot="reference" size="mini" type="text"
                 icon="el-icon-edit" @click="handleUpdate(scope.row)">修改
               </el-button>
-              <el-button slot="reference" v-permisaction="['admin:tbCar:remove']" size="mini" type="text"
+              <el-button slot="reference" size="mini" type="text"
                 icon="el-icon-delete" @click="handleDelete(scope.row)">删除
               </el-button>
             </template>

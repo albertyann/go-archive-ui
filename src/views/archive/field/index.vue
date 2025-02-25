@@ -65,7 +65,6 @@
             <template slot-scope="scope">
               <el-button
                 slot="reference"
-                v-permisaction="['admin:contract:edit']"
                 size="mini"
                 type="text"
                 icon="el-icon-edit"
@@ -74,7 +73,6 @@
               </el-button>
               <el-button
                 slot="reference"
-                v-permisaction="['admin:contract:remove']"
                 size="mini"
                 type="text"
                 icon="el-icon-delete"
@@ -277,7 +275,7 @@
                 </el-col>
                 <el-col :span="18">
                   <el-form-item label="坐园地差额" prop="remarks">
-                    <el-input-number v-model="form.dueArea - form.actualArea" style="width: 152px;" :controls="false"/> m²
+                    <el-input-number v-model="form.diffDueActualArea" style="width: 152px;" :controls="false"/> m²
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -456,7 +454,9 @@ export default {
         homestead: undefined,
         otherArea: undefined,
         remarks: undefined,
+        dueArea: undefined,
         actualArea: undefined,
+        diffDueActualArea: undefined,
         actualLength: undefined,
         actualWidth: undefined,
         actualRemarks: undefined,

@@ -37,10 +37,10 @@
           <el-table-column label="乙方" prop="partyB" />
           <el-table-column label="操作" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <el-button slot="reference" v-permisaction="['admin:contract:edit']" size="mini" type="text"
+              <el-button slot="reference"size="mini" type="text"
                 icon="el-icon-edit" @click="handleUpdate(scope.row)">修改
               </el-button>
-              <el-button slot="reference" v-permisaction="['admin:contract:remove']" size="mini" type="text"
+              <el-button slot="reference" size="mini" type="text"
                 icon="el-icon-delete" @click="handleDelete(scope.row)">删除
               </el-button>
             </template>
