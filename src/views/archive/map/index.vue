@@ -11,7 +11,28 @@
       return {
         houseList: [],
         houseTotal: 0,
-        map: undefined
+        map: undefined,
+        buildPeriod:[{
+            "value": "1",
+            "label": "1980年及以前",
+          },
+          {
+            "value": "2",
+            "label": "1981~1990年",
+          },
+          {
+            "value": "3",
+            "label": "1991~2000年",
+          },
+          {
+            "value": "4",
+            "label": "2001~2010年",
+          },
+          {
+            "value": "5",
+            "label": "2011年及以后",
+          },
+        ]
       }
     },
     mounted() {
@@ -49,16 +70,31 @@
 
             this.houseList.forEach(house => {
               if (house.longitude.length > 0) {
-                let lnglat = new T.LngLat(house.longitude, house.latitude)
+                let lnglat = new T.LngLat(parseFloat(house.longitude), parseFloat(house.latitude))
                 var marker = new T.Marker(lnglat);
                 this.map.addOverLay(marker);
 
                 var infoWin = new T.InfoWindow();
                 infoWin.setLngLat(lnglat);
 
+                let lnglat1 = new T.LngLat(parseFloat(house.longitude) - 0.0001, parseFloat(house.latitude) - 0.0001)
+                let lnglat2 = new T.LngLat(parseFloat(house.longitude) + 0.0001, parseFloat(house.latitude) + 0.0001)
+                var bounds  = new T.LngLatBounds(lnglat1, lnglat2);
+                var option  = {"fillColor": "#3300FF", "color": "#3333CC", "weight": 1};
+                if (house.status == '危房') {
+                  option.fillColor = "#CC3300";
+                  option.color = "#CC0000";
+                }
+                var rect = new T.Rectangle(bounds, option);
+                this.map.addOverLay(rect);
+
+                let label = this.buildPeriod[house.buildPeriod] ? this.buildPeriod[house.buildPeriod].label : "-";
+
                 let content = '户主: ' + house.holder +'<br/>' +
-                              '电话: ' + house.holderPhone +'<br/>' +
-                              '面积: ' + house.area +' 平米 <br/>'
+                              '建筑层数: ' + house.floorNum +'<br/>' +
+                              '建造年份: ' + label +'<br/>' +
+                              '面积: ' + house.area +' 平米 <br/>' +
+                              '房屋状态: ' + house.status +'<br/>'
                 infoWin.setContent(content);
                 //向地图上添加信息窗口
                 marker.addEventListener("click", function () {
