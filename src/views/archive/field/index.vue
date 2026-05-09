@@ -160,7 +160,7 @@
                 </el-col>
                 <el-col :span="18">
                   <el-form-item label="应得坐园地面积" prop="remarks">
-                    <el-input-number v-model="form.dueArea" placeholder="应得坐园地面积" style="width: 152px;" :controls="false"/> m²（合计）
+                    <el-input-number v-model="form.dueArea" placeholder="应得坐园地面积" style="width: 152px;" :controls="false" /> m²（合计）
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -275,7 +275,7 @@
                 </el-col>
                 <el-col :span="18">
                   <el-form-item label="坐园地差额" prop="remarks">
-                    <el-input-number v-model="form.diffDueActualArea" style="width: 152px;" :controls="false"/> m²
+                    <el-input-number v-model="form.diffDueActualArea" style="width: 152px;" :controls="false" /> m²
                   </el-form-item>
                 </el-col>
               </el-row>
