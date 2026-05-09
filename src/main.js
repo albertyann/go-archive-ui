@@ -54,6 +54,7 @@ Vue.prototype.selectItemsLabel = selectItemsLabel
 // Vue.prototype.download = download
 
 // 全局组件挂载
+// eslint-disable-next-line vue/multi-word-component-names
 Vue.component('Pagination', Pagination)
 Vue.component('BasicLayout', BasicLayout)
 
