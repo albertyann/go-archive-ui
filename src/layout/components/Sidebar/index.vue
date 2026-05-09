@@ -5,7 +5,7 @@
       <el-menu
         :default-active="activeMenu"
         :collapse="isCollapse"
-        :background-color="$store.state.settings.themeStyle === 'light' ? (variables.menuLightBg || '#fff') : (variables.menuBg || '#001529')"
+        :background-color="$store.state.settings.themeStyle === 'light' ? '#fff' : '#001529'"
         :text-color="$store.state.settings.themeStyle === 'light' ? 'rgba(0,0,0,.65)' : '#fff'"
         :active-text-color="$store.state.settings.theme"
         :unique-opened="true"
@@ -28,7 +28,6 @@
 import { mapGetters } from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
-import variables from '@/styles/variables.scss'
 
 export default {
   components: { SidebarItem, Logo },
@@ -48,9 +47,6 @@ export default {
     },
     showLogo() {
       return this.$store.state.settings.sidebarLogo
-    },
-    variables() {
-      return variables
     },
     isCollapse() {
       return !this.sidebar.opened

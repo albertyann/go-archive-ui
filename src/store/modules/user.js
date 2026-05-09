@@ -61,6 +61,7 @@ const actions = {
           commit('SET_TOKEN', '')
           removeToken()
           resolve()
+          return
         }
 
         const { roles, name, avatar, introduction, permissions } = response.data
