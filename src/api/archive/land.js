@@ -10,13 +10,12 @@ export function listTbLand(query) {
 }
 
 export function exportLand(query) {
-    return request({
-        url: '/api/v1/land/export',
-        method: 'get',
-        params: query
-    })
+  return request({
+    url: '/api/v1/land/export',
+    method: 'get',
+    params: query
+  })
 }
-
 
 // 查询TbLand详细
 export function getTbLand(id) {

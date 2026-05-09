@@ -51,8 +51,6 @@ import ChartCard from '@/components/ChartCard'
 import Bar from '@/components/Bar.vue'
 import { hukouStat } from '@/api/archive/car'
 
-const barData2 = []
-
 const rankList = []
 for (let i = 0; i < 7; i++) {
   rankList.push({
@@ -106,7 +104,7 @@ export default {
       })
 
       // 土地分布
-      let landGroupStat = res.data.landGroupStat;
+      const landGroupStat = res.data.landGroupStat
       landGroupStat.sort((a, b) => {
         if (a.group > b.group) {
           return 1
