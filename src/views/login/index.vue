@@ -1,7 +1,6 @@
 <template>
   <div class="login-container">
-    <div id="particles-js">
-    </div>
+    <div id="particles-js" />
 
     <div class="login-weaper animated bounceInDown">
       <div class="login-left">
@@ -136,8 +135,7 @@
       <div class="s-bottom-layer-content">
 
         <div class="lh">
-          <a class="text-color" href="#" target="_blank">
-          </a>
+          <a class="text-color" href="#" target="_blank" />
         </div>
         <div class="open-content-info">
           <div class="tip-hover-panel" style="top: -18px; right: -12px">
@@ -148,8 +146,7 @@
                     class="text-color"
                     href="#"
                     target="_blank"
-                  >
-                  </a>
+                  />
                 </div>
               </div>
             </div>

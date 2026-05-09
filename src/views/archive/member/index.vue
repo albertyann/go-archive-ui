@@ -57,7 +57,6 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
             <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -77,6 +76,17 @@
           </el-col>
           <el-col :span="1.5">
             <el-button
+              v-permisaction="['admin:tbMember:edit']"
+              type="success"
+              icon="el-icon-edit"
+              size="mini"
+              :disabled="single"
+              @click="handleUpdate"
+            >修改
+            </el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
               v-permisaction="['admin:tbMember:remove']"
               type="danger"
               icon="el-icon-delete"
@@ -90,7 +100,6 @@
             <el-button
               v-permisaction="['archive:tbMember:export']"
               type="primary"
-              icon="el-icon-download"
               size="mini"
               @click="handleExport"
             >导出</el-button>
@@ -108,13 +117,6 @@
 
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <el-button
-                size="mini"
-                type="text"
-                icon="el-icon-document"
-                @click="openView = true"
-              >查看
-              </el-button>
               <el-button
                 v-permisaction="['archive:tbMember:edit']"
                 size="mini"
@@ -151,12 +153,21 @@
         />
 
         <!-- 添加或修改对话框 -->
-        <el-drawer :title="title" :visible.sync="open" size="830px">
+        <el-drawer
+          :title="title"
+          :visible.sync="open"
+          size="830px"
+        >
           <el-form ref="form" :model="form" :rules="rules" size="medium" label-width="100px">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="姓名" prop="name">
-                  <el-input v-model="form.name" placeholder="请输入姓名" clearable :style="{width: '100%'}" />
+                  <el-input
+                    v-model="form.name"
+                    placeholder="请输入姓名"
+                    clearable
+                    :style="{width: '100%'}"
+                  />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -176,14 +187,25 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="身份证" prop="idCard">
-                  <el-input v-model="form.idCard" placeholder="请输入身份证" clearable :style="{width: '100%'}" />
+                  <el-input
+                    v-model="form.idCard"
+                    placeholder="请输入身份证"
+                    clearable
+                    :style="{width: '100%'}"
+                  />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="证件有效期">
-                  <el-input v-model="form.idCardStart" :style="{width: '120px'}" />
+                  <el-input
+                    v-model="form.idCardStart"
+                    :style="{width: '120px'}"
+                  />
                   <span> 至 </span>
-                  <el-input v-model="form.idCardEnd" :style="{width: '130px'}" />
+                  <el-input
+                    v-model="form.idCardEnd"
+                    :style="{width: '130px'}"
+                  />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -191,7 +213,12 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="出生日期" prop="birthday">
-                  <el-input v-model="form.birthday" readonly clearable :style="{width: '100%'}" />
+                  <el-input
+                    v-model="form.birthday"
+                    readonly
+                    clearable
+                    :style="{width: '100%'}"
+                  />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -260,7 +287,12 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="户主关系" prop="holderRelation">
-                  <el-select v-model="form.holderRelation" placeholder="请选择户主关系" clearable :style="{width: '100%'}">
+                  <el-select
+                    v-model="form.holderRelation"
+                    placeholder="请选择户主关系"
+                    clearable
+                    :style="{width: '100%'}"
+                  >
                     <el-option
                       v-for="(item, index) in holderRelationOptions"
                       :key="index"
@@ -271,27 +303,6 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <div v-if="form.isHolder == 1">
-                <el-col :span="24">
-                  <el-form-item label="户籍成员" prop="status">
-                    <el-button size="mini" @click="openDialog = true">添 加</el-button>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                  <el-form-item>
-                    <el-table :data="familyMember">
-                      <el-table-column label="姓名" align="center" prop="name" />
-                      <el-table-column label="年龄" align="center" prop="age" />
-                      <el-table-column label="身份证" align="center" prop="idCard" />
-                      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-                        <template slot-scope="scope">
-                          <el-button type="text" size="mini" @click="handleMemberDelete(scope.row)">删除</el-button>
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                  </el-form-item>
-                </el-col>
-              </div>
             </el-row>
 
             <el-row>
@@ -364,7 +375,12 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="残障等级" prop="disabilityLevel">
-                  <el-select v-model="form.disabilityLevel" placeholder="请选择残障等级" clearable :style="{width: '100%'}">
+                  <el-select
+                    v-model="form.disabilityLevel"
+                    placeholder="请选择残障等级"
+                    clearable
+                    :style="{width: '100%'}"
+                  >
                     <el-option
                       v-for="(item, index) in disabilityLevelOptions"
                       :key="index"
@@ -445,77 +461,12 @@
                   :style="{width: '100%'}"
                 />
               </el-form-item>
-              <el-from-item>
-                <el-col :span="24">
-                  <el-form-item label="车辆信息" prop="status">
-                    <el-button size="mini" @click="handleAddCar">添 加</el-button>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                  <el-form-item label="">
-                    <el-table :data="carList">
-                      <el-table-column label="车牌" align="center">
-                        <template slot-scope="scope">
-                          <el-input v-if="scope.row.id==0" v-model="scope.row.carNo" placeholder="车牌" />
-                          <span v-if="scope.row.id>0">{{ scope.row.carNo }}</span>
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="车主" align="center">
-                        <template slot-scope="scope">
-                          <el-input v-if="scope.row.id==0" v-model="scope.row.ownerName" placeholder="车主" />
-                          <span v-if="scope.row.id>0">{{ scope.row.ownerName }}</span>
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="联系电话" align="center">
-                        <template slot-scope="scope">
-                          <el-input v-if="scope.row.id==0" v-model="scope.row.ownerPhone" placeholder="联系电话" />
-                          <span v-if="scope.row.id>0">{{ scope.row.ownerPhone }}</span>
-                        </template>
-                      </el-table-column>
-                      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-                        <template slot-scope="scope">
-                          <el-button size="mini" type="text" @click="handleCarDelete(scope.row)">删除</el-button>
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                  </el-form-item>
-                </el-col>
-              </el-from-item>
             </el-row>
           </el-form>
           <div class="demo-drawer__footer">
             <el-button type="primary" @click="submitForm">确定</el-button>
           </div>
         </el-drawer>
-
-        <!-- 添加或修改对话框 -->
-        <el-dialog title="添加家庭成员" :visible.sync="openDialog" width="800px">
-          <el-form ref="familyForm" :model="familyParams" :inline="true" label-width="68px">
-            <el-form-item label="姓名" prop="name">
-              <el-input v-model="familyParams.name" placeholder="姓名" />
-            </el-form-item>
-            <el-form-item label="电话" prop="phone">
-              <el-input v-model="familyParams.phone" placeholder="电话" />
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" icon="el-icon-search" @click="familyQuery">查找</el-button>
-            </el-form-item>
-          </el-form>
-
-          <el-table v-loading="loading" :data="familyResult" @selection-change="handleSelectionChange">
-            <el-table-column label="姓名" align="center" prop="name" />
-            <el-table-column label="年龄" align="center" prop="age" />
-            <el-table-column label="性别" align="center" prop="gender" />
-            <el-table-column label="户主" align="center" prop="houseHolderRelation" />
-            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-              <template slot-scope="scope">
-                <el-button size="mini" type="text" @click="addFamilyMember(scope.row)">添加</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-dialog>
-
-        <DetailView :open-view="openView" @handleClose="openView = $event" />
       </el-card>
     </template>
   </BasicLayout>
@@ -523,30 +474,14 @@
 
 <script>
 import {
-  addTbMember,
-  delTbMember,
-  getTbMember,
-  listTbMember,
-  updateTbMember,
-  exportMember,
-  getFamilyMember,
-  delFamilyMember
+  addTbMember, delTbMember, getTbMember,
+  listTbMember, updateTbMember, exportMember
 } from '@/api/archive/member'
-import {
-  addTbCar,
-  delTbCar,
-  getHukouCar
-} from '@/api/archive/car'
-import {
-  fmtDate
-} from '@/utils/index'
+import { fmtDate } from '@/utils/index'
 import excel from '@/utils/excel'
-import DetailView from './DetailView'
-
 export default {
   name: 'ArchiveMember',
   components: {
-    DetailView
   },
   data() {
     return {
@@ -564,19 +499,12 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
-      openView: false,
       isEdit: false,
       // 类型数据字典
       typeOptions: [],
       tbMemberList: [],
       sexOptions: [],
-      openDialog: false,
-      familyResult: [],
-      familyMember: [],
-      familyParams: {
-        name: '',
-        phone: ''
-      },
+
       genderOptions: [{
         'label': '男',
         'value': '男'
@@ -591,162 +519,46 @@ export default {
         'label': '是',
         'value': '1'
       }],
-      holderRelationOptions: [{
-        label: '妻',
-        value: '妻'
-      },
-      {
-        label: '子',
-        value: '子'
-      },
-      {
-        label: '儿媳',
-        value: '儿媳'
-      },
-      {
-        label: '孙子',
-        value: '孙子'
-      },
-      {
-        label: '外孙子',
-        value: '外孙子'
-      },
-      {
-        label: '女婿',
-        value: '女婿'
-      },
-      {
-        label: '女',
-        value: '女'
-      },
-      {
-        label: '本人',
-        value: '本人'
-      },
-      {
-        label: '母亲',
-        value: '母亲'
-      },
-      {
-        label: '孙女',
-        value: '孙女'
-      },
-      {
-        label: '父亲',
-        value: '父亲'
-      },
-      {
-        label: '次女',
-        value: '次女'
-      },
-      {
-        label: '外孙女',
-        value: '外孙女'
-      },
-      {
-        label: '非亲属',
-        value: '非亲属'
-      },
-      {
-        label: '曾(外)孙子',
-        value: '曾(外)孙子'
-      },
-      {
-        label: '孙(外孙)女婿',
-        value: '孙(外孙)女婿'
-      },
-      {
-        label: '长子',
-        value: '长子'
-      },
-      {
-        label: '孙(外孙)媳妇',
-        value: '孙(外孙)媳妇'
-      },
-      {
-        label: '其他亲属',
-        value: '其他亲属'
-      },
-      {
-        label: '夫',
-        value: '夫'
-      },
-      {
-        label: '其他儿子',
-        value: '其他儿子'
-      },
-      {
-        label: '长女',
-        value: '长女'
-      },
-      {
-        label: '养女或继女',
-        value: '养女或继女'
-      },
-      {
-        label: '其他(外)孙子(女)',
-        value: '其他(外)孙子(女)'
-      },
-      {
-        label: '养子或继子',
-        value: '养子或继子'
-      },
-      {
-        label: '岳母',
-        value: '岳母'
-      },
-      {
-        label: '孙(外孙)子(女)',
-        value: '孙(外孙)子(女)'
-      },
-      {
-        label: '次子',
-        value: '次子'
-      },
-      {
-        label: '外甥女',
-        value: '外甥女'
-      },
-      {
-        label: '妹妹',
-        value: '妹妹'
-      },
-      {
-        label: '外甥',
-        value: '外甥'
-      },
-      {
-        label: '曾(外)孙女',
-        value: '曾(外)孙女'
-      },
-      {
-        label: '婆婆',
-        value: '婆婆'
-      },
-      {
-        label: '小集体户主',
-        value: '小集体户主'
-      },
-      {
-        label: '姐姐',
-        value: '姐姐'
-      },
-      {
-        label: '三女',
-        value: '三女'
-      },
-      {
-        label: '丈夫',
-        value: '丈夫'
-      },
-      {
-        label: '祖母',
-        value: '祖母'
-      },
-      {
-        label: '弟',
-        value: '弟'
-      }
+      holderRelationOptions: [
+        { label: '妻', value: '妻' },
+        { label: '子', value: '子' },
+        { label: '儿媳', value: '儿媳' },
+        { label: '孙子', value: '孙子' },
+        { label: '外孙子', value: '外孙子' },
+        { label: '女婿', value: '女婿' },
+        { label: '女', value: '女' },
+        { label: '本人', value: '本人' },
+        { label: '母亲', value: '母亲' },
+        { label: '孙女', value: '孙女' },
+        { label: '父亲', value: '父亲' },
+        { label: '次女', value: '次女' },
+        { label: '外孙女', value: '外孙女' },
+        { label: '非亲属', value: '非亲属' },
+        { label: '曾(外)孙子', value: '曾(外)孙子' },
+        { label: '孙(外孙)女婿', value: '孙(外孙)女婿' },
+        { label: '长子', value: '长子' },
+        { label: '孙(外孙)媳妇', value: '孙(外孙)媳妇' },
+        { label: '其他亲属', value: '其他亲属' },
+        { label: '夫', value: '夫' },
+        { label: '其他儿子', value: '其他儿子' },
+        { label: '长女', value: '长女' },
+        { label: '养女或继女', value: '养女或继女' },
+        { label: '其他(外)孙子(女)', value: '其他(外)孙子(女)' },
+        { label: '养子或继子', value: '养子或继子' },
+        { label: '岳母', value: '岳母' },
+        { label: '孙(外孙)子(女)', value: '孙(外孙)子(女)' },
+        { label: '次子', value: '次子' },
+        { label: '外甥女', value: '外甥女' },
+        { label: '妹妹', value: '妹妹' },
+        { label: '外甥', value: '外甥' },
+        { label: '曾(外)孙女', value: '曾(外)孙女' },
+        { label: '婆婆', value: '婆婆' },
+        { label: '小集体户主', value: '小集体户主' },
+        { label: '姐姐', value: '姐姐' },
+        { label: '三女', value: '三女' },
+        { label: '丈夫', value: '丈夫' },
+        { label: '祖母', value: '祖母' },
+        { label: '弟', value: '弟' }
       ],
       hukouTypeOptions: [{
         'label': '农业户口',
@@ -842,8 +654,7 @@ export default {
         'married': '婚姻状况',
         'pension': '养老保险',
         'medicalInsurance': '医疗保险'
-      },
-      carList: []
+      }
     }
   },
   created() {
@@ -860,64 +671,8 @@ export default {
         this.tbMemberList = response.data.list
         this.total = response.data.count
         this.loading = false
-      })
-    },
-    getCarList() {
-      getHukouCar(this.form.id).then(response => {
-        this.carList = response.data
-      })
-    },
-    getFamilyList() {
-      getFamilyMember(this.form.id).then(response => {
-        this.familyMember = response.data
-      })
-    },
-    handleAddCar() {
-      this.carList.push({
-        id: 0,
-        carNo: '',
-        ownerName: this.form.name,
-        ownerPhone: this.form.phone
-      })
-    },
-    handleCarAdd(item) {
-      if (item.carNo !== undefined && item.carNo.length > 0) {
-        item.hukouId = this.form.id + ''
-        addTbCar(item).then(response => {
-          if (response.code === 200) {
-            this.msgSuccess(response.msg)
-            this.getCarList()
-          } else {
-            this.msgError(response.msg)
-          }
-        })
       }
-    },
-    handleCarDelete(item) {
-      if (item.id > 0) {
-        delTbCar({ 'ids': [item.id] }).then(res => {
-          this.getCarList()
-        })
-      } else {
-        this.carList.pop(item)
-      }
-    },
-    familyQuery() {
-      listTbMember(this.familyParams).then((res) => {
-        this.familyResult = res.data.list
-      })
-    },
-    addFamilyMember(item) {
-      this.familyMember.push(item)
-    },
-    handleMemberDelete(item) {
-      this.familyMember.pop(item)
-      console.log(item)
-      if (item.id > 0) {
-        delFamilyMember({ 'id': item.id }).then(res => {
-          console.log(res)
-        })
-      }
+      )
     },
     // 取消按钮
     cancel() {
@@ -959,6 +714,8 @@ export default {
     fileClose: function() {
       this.fileOpen = false
     },
+    // 关系
+    // 文件
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageIndex = 1
@@ -986,15 +743,13 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
-      const id = row.id || this.ids
+      const id =
+                row.id || this.ids
       getTbMember(id).then(response => {
         this.form = response.data
         this.open = true
         this.title = '修改人员信息'
         this.isEdit = true
-
-        this.getCarList()
-        this.getFamilyList()
       })
     },
     /** 导出按钮操作 */
@@ -1029,9 +784,6 @@ export default {
     submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          this.form.carList = this.carList
-          this.form.familyMember = this.familyMember
-
           if (this.form.id !== undefined) {
             delete this.form.age
             updateTbMember(this.form).then(response => {
@@ -1066,9 +818,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return delTbMember({
-          'ids': Ids
-        })
+        return delTbMember({ 'ids': Ids })
       }).then((response) => {
         if (response.code === 200) {
           this.msgSuccess(response.msg)
@@ -1077,7 +827,8 @@ export default {
         } else {
           this.msgError(response.msg)
         }
-      }).catch(function() {})
+      }).catch(function() {
+      })
     }
   }
 }

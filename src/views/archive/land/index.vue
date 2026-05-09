@@ -4,8 +4,14 @@
       <el-card class="box-card">
         <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
           <el-form-item label="户主姓名" prop="holder">
-            <el-input v-model="queryParams.holder" placeholder="户主姓名" clearable size="small" style="width: 160px"
-              @keyup.enter.native="handleQuery" />
+            <el-input
+              v-model="queryParams.holder"
+              placeholder="户主姓名"
+              clearable
+              size="small"
+              style="width: 160px"
+              @keyup.enter.native="handleQuery"
+            />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索
@@ -16,13 +22,23 @@
 
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
-            <el-button v-permisaction="['admin:tbLand:add']" type="primary" icon="el-icon-plus" size="mini"
-              @click="handleAdd">新增
+            <el-button
+              v-permisaction="['admin:tbLand:add']"
+              type="primary"
+              icon="el-icon-plus"
+              size="mini"
+              @click="handleAdd"
+            >新增
             </el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button v-permisaction="['admin:tbLand:export']" type="primary" icon="el-icon-download" size="mini"
-              @click="handleExport">导出
+            <el-button
+              v-permisaction="['admin:tbLand:export']"
+              type="primary"
+              icon="el-icon-download"
+              size="mini"
+              @click="handleExport"
+            >导出
             </el-button>
           </el-col>
         </el-row>
@@ -41,18 +57,41 @@
           <el-table-column label="实际种植面积" align="center" prop="actualPlantingArea" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="160">
             <template slot-scope="scope">
-              <el-button slot="reference" v-permisaction="['admin:tbLand:edit']" size="mini" type="text"
-                icon="el-icon-document" @click="handleDetail(scope.row)"> 查看 </el-button>
-              <el-button slot="reference" v-permisaction="['admin:tbLand:edit']" size="mini" type="text"
-                icon="el-icon-edit" @click="handleUpdate(scope.row)"> 修改 </el-button>
-              <el-button slot="reference" v-permisaction="['admin:tbLand:remove']" size="mini" type="text"
-                icon="el-icon-delete" @click="handleDelete(scope.row)"> 删除 </el-button>
+              <el-button
+                slot="reference"
+                v-permisaction="['admin:tbLand:edit']"
+                size="mini"
+                type="text"
+                icon="el-icon-document"
+                @click="handleDetail(scope.row)"
+              > 查看 </el-button>
+              <el-button
+                slot="reference"
+                v-permisaction="['admin:tbLand:edit']"
+                size="mini"
+                type="text"
+                icon="el-icon-edit"
+                @click="handleUpdate(scope.row)"
+              > 修改 </el-button>
+              <el-button
+                slot="reference"
+                v-permisaction="['admin:tbLand:remove']"
+                size="mini"
+                type="text"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.row)"
+              > 删除 </el-button>
             </template>
           </el-table-column>
         </el-table>
 
-        <pagination v-show="total>0" :total="total" :page.sync="queryParams.pageIndex"
-          :limit.sync="queryParams.pageSize" @pagination="getList" />
+        <pagination
+          v-show="total>0"
+          :total="total"
+          :page.sync="queryParams.pageIndex"
+          :limit.sync="queryParams.pageSize"
+          @pagination="getList"
+        />
 
         <!-- 添加或修改对话框 -->
         <el-dialog :title="title" :visible.sync="open" width="800px">
@@ -179,232 +218,232 @@
 </template>
 
 <script>
-  import {
-    addTbLand,
-    delTbLand,
-    getTbLand,
-    listTbLand,
-    updateTbLand,
-    exportLand
-  } from '@/api/archive/land'
-  import excel from "@/utils/excel";
-  import {
-    fmtDate
-  } from '@/utils/index'
-  export default {
-    name: 'TbLand',
-    components: {},
-    data() {
-      return {
-        // 遮罩层
-        loading: true,
-        // 选中数组
-        ids: [],
-        // 非单个禁用
-        single: true,
-        // 非多个禁用
-        multiple: true,
-        // 总条数
-        total: 0,
-        // 弹出层标题
-        title: '',
-        // 是否显示弹出层
-        open: false,
-        detailDialogShow: false,
-        detail: {},
-        isEdit: false,
-        // 类型数据字典
-        typeOptions: [],
-        tbLandList: [],
+import {
+  addTbLand,
+  delTbLand,
+  getTbLand,
+  listTbLand,
+  updateTbLand,
+  exportLand
+} from '@/api/archive/land'
+import excel from '@/utils/excel'
+import {
+  fmtDate
+} from '@/utils/index'
+export default {
+  name: 'TbLand',
+  components: {},
+  data() {
+    return {
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      // 总条数
+      total: 0,
+      // 弹出层标题
+      title: '',
+      // 是否显示弹出层
+      open: false,
+      detailDialogShow: false,
+      detail: {},
+      isEdit: false,
+      // 类型数据字典
+      typeOptions: [],
+      tbLandList: [],
 
-        // 查询参数
-        queryParams: {
-          holder: "",
-          pageIndex: 1,
-          pageSize: 10,
-        },
-        // 表单参数
-        form: {},
-        // 表单校验
-        rules: {},
-        // 导出表头信息
-        excelHead: {
-          'id': 'ID',
-          'holder': '户主',
-          'selfLand': '自留地',
-          'dueArea': '1996年应得面积',
-          'actualArea': '2023年实际面积',
-          'confirmedArea': '2018年确权面积',
-          'expropriatedArea': '确权后被征用面积',
-          'inflowArea': '流入面积',
-          'outflowArea': '流出面积',
-          'contractedArea': '承包面积',
-          'actualPlantingArea': '实际种植面积',
-        }
-      }
-    },
-    created() {
-      this.getList()
-    },
-    methods: {
-      /** 查询参数列表 */
-      getList() {
-        this.loading = true
-        listTbLand(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.tbLandList = response.data.list
-          this.total = response.data.count
-          this.loading = false
-        })
+      // 查询参数
+      queryParams: {
+        holder: '',
+        pageIndex: 1,
+        pageSize: 10
       },
-      // 取消按钮
-      cancel() {
-        this.open = false
-        this.reset()
-      },
-      // 表单重置
-      reset() {
-        this.form = {
-          id: 0,
-          holder: '',
-          selfLand: 0,
-          dueArea: 0,
-          actualArea: 0,
-          confirmedArea: 0,
-          expropriatedArea: 0,
-          inflowArea: 0,
-          outflowArea: 0,
-          contractedArea: 0,
-          actualPlantingArea: 0,
-        }
-        this.resetForm('form')
-      },
-      getImgList: function() {
-        this.form[this.fileIndex] = this.$refs['fileChoose'].resultList[0].fullUrl
-      },
-      fileClose: function() {
-        this.fileOpen = false
-      },
-      // 关系
-      // 文件
-      /** 搜索按钮操作 */
-      handleQuery() {
-        this.queryParams.pageIndex = 1
-        this.getList()
-      },
-      /** 重置按钮操作 */
-      resetQuery() {
-        this.dateRange = []
-        this.resetForm('queryForm')
-        this.handleQuery()
-      },
-      /** 新增按钮操作 */
-      handleAdd() {
-        this.reset()
-        this.open = true
-        this.title = '添加土地信息'
-        this.isEdit = false
-      },
-      // 多选框选中数据
-      handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.id)
-        this.single = selection.length !== 1
-        this.multiple = !selection.length
-      },
-      handleDetail(row) {
-        getTbLand(row.id).then(response => {
-          this.detail = response.data
-          this.detailDialogShow = true
-        })
-      },
-      /** 修改按钮操作 */
-      handleUpdate(row) {
-        this.reset()
-        const id = row.id || this.ids
-        getTbLand(id).then(response => {
-          this.form = response.data
-          this.open = true
-          this.title = '修改土地信息'
-          this.isEdit = true
-        })
-      },
-      /** 提交按钮 */
-      submitForm: function() {
-        this.$refs['form'].validate(valid => {
-          if (valid) {
-            if (this.form.id !== undefined) {
-              updateTbLand(this.form).then(response => {
-                if (response.code === 200) {
-                  this.msgSuccess(response.msg)
-                  this.open = false
-                  this.getList()
-                } else {
-                  this.msgError(response.msg)
-                }
-              })
-            } else {
-              addTbLand(this.form).then(response => {
-                if (response.code === 200) {
-                  this.msgSuccess(response.msg)
-                  this.open = false
-                  this.getList()
-                } else {
-                  this.msgError(response.msg)
-                }
-              })
-            }
-          }
-        })
-      },
-      /** 导出按钮操作 */
-      handleExport() {
-        const queryParams = this.queryParams
-        this.$confirm('确认导出所有数据?', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(function() {
-          return exportLand(queryParams)
-        }).then(response => {
-          let headerKeys = Object.keys(this.excelHead) || [];
-          let headerValues = Object.values(this.excelHead) || [];
-          if (response.data.length) {
-            const params = {
-              title: headerValues,
-              key: headerKeys,
-              data: response.data,
-              autoWidth: true,
-              filename: "土地信息" + fmtDate("Ymd", new Date()),
-            };
-            excel.export_array_to_excel(params);
-          } else {
-            this.$Message.error("暂无数据,无法导出");
-          }
-        }).catch(function(e) {
-          console.log(e)
-        })
-      },
-      /** 删除按钮操作 */
-      handleDelete(row) {
-        var Ids = (row.id && [row.id]) || this.ids
-
-        this.$confirm('是否确认删除编号为"' + Ids + '"的数据项?', '警告', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(function() {
-          return delTbLand({
-            'ids': Ids
-          })
-        }).then((response) => {
-          if (response.code === 200) {
-            this.msgSuccess(response.msg)
-            this.open = false
-            this.getList()
-          } else {
-            this.msgError(response.msg)
-          }
-        }).catch(function() {})
+      // 表单参数
+      form: {},
+      // 表单校验
+      rules: {},
+      // 导出表头信息
+      excelHead: {
+        'id': 'ID',
+        'holder': '户主',
+        'selfLand': '自留地',
+        'dueArea': '1996年应得面积',
+        'actualArea': '2023年实际面积',
+        'confirmedArea': '2018年确权面积',
+        'expropriatedArea': '确权后被征用面积',
+        'inflowArea': '流入面积',
+        'outflowArea': '流出面积',
+        'contractedArea': '承包面积',
+        'actualPlantingArea': '实际种植面积'
       }
     }
+  },
+  created() {
+    this.getList()
+  },
+  methods: {
+    /** 查询参数列表 */
+    getList() {
+      this.loading = true
+      listTbLand(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+        this.tbLandList = response.data.list
+        this.total = response.data.count
+        this.loading = false
+      })
+    },
+    // 取消按钮
+    cancel() {
+      this.open = false
+      this.reset()
+    },
+    // 表单重置
+    reset() {
+      this.form = {
+        id: 0,
+        holder: '',
+        selfLand: 0,
+        dueArea: 0,
+        actualArea: 0,
+        confirmedArea: 0,
+        expropriatedArea: 0,
+        inflowArea: 0,
+        outflowArea: 0,
+        contractedArea: 0,
+        actualPlantingArea: 0
+      }
+      this.resetForm('form')
+    },
+    getImgList: function() {
+      this.form[this.fileIndex] = this.$refs['fileChoose'].resultList[0].fullUrl
+    },
+    fileClose: function() {
+      this.fileOpen = false
+    },
+    // 关系
+    // 文件
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.queryParams.pageIndex = 1
+      this.getList()
+    },
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.dateRange = []
+      this.resetForm('queryForm')
+      this.handleQuery()
+    },
+    /** 新增按钮操作 */
+    handleAdd() {
+      this.reset()
+      this.open = true
+      this.title = '添加土地信息'
+      this.isEdit = false
+    },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id)
+      this.single = selection.length !== 1
+      this.multiple = !selection.length
+    },
+    handleDetail(row) {
+      getTbLand(row.id).then(response => {
+        this.detail = response.data
+        this.detailDialogShow = true
+      })
+    },
+    /** 修改按钮操作 */
+    handleUpdate(row) {
+      this.reset()
+      const id = row.id || this.ids
+      getTbLand(id).then(response => {
+        this.form = response.data
+        this.open = true
+        this.title = '修改土地信息'
+        this.isEdit = true
+      })
+    },
+    /** 提交按钮 */
+    submitForm: function() {
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          if (this.form.id !== undefined) {
+            updateTbLand(this.form).then(response => {
+              if (response.code === 200) {
+                this.msgSuccess(response.msg)
+                this.open = false
+                this.getList()
+              } else {
+                this.msgError(response.msg)
+              }
+            })
+          } else {
+            addTbLand(this.form).then(response => {
+              if (response.code === 200) {
+                this.msgSuccess(response.msg)
+                this.open = false
+                this.getList()
+              } else {
+                this.msgError(response.msg)
+              }
+            })
+          }
+        }
+      })
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      const queryParams = this.queryParams
+      this.$confirm('确认导出所有数据?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return exportLand(queryParams)
+      }).then(response => {
+        const headerKeys = Object.keys(this.excelHead) || []
+        const headerValues = Object.values(this.excelHead) || []
+        if (response.data.length) {
+          const params = {
+            title: headerValues,
+            key: headerKeys,
+            data: response.data,
+            autoWidth: true,
+            filename: '土地信息' + fmtDate('Ymd', new Date())
+          }
+          excel.export_array_to_excel(params)
+        } else {
+          this.$Message.error('暂无数据,无法导出')
+        }
+      }).catch(function(e) {
+        console.log(e)
+      })
+    },
+    /** 删除按钮操作 */
+    handleDelete(row) {
+      var Ids = (row.id && [row.id]) || this.ids
+
+      this.$confirm('是否确认删除编号为"' + Ids + '"的数据项?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return delTbLand({
+          'ids': Ids
+        })
+      }).then((response) => {
+        if (response.code === 200) {
+          this.msgSuccess(response.msg)
+          this.open = false
+          this.getList()
+        } else {
+          this.msgError(response.msg)
+        }
+      }).catch(function() {})
+    }
   }
+}
 </script>

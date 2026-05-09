@@ -18,7 +18,6 @@ export function exportMember(query) {
   })
 }
 
-
 // 查询TbMember详细
 export function getTbMember(id) {
   return request({

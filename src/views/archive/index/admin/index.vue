@@ -3,24 +3,25 @@
     <el-row :gutter="12">
       <el-col :sm="24" :xs="24" :md="6" :xl="6" :lg="6" :style="{ marginBottom: '12px' }">
         <chart-card title="户籍人数" :total="stat.totalMember">
-          <div v-for="item in stat.genderStat">
-            <template>{{ item.gender }}<span> {{ item.num }}</span></template>
+          <div v-for="item in stat.genderStat" :key="item.gender">
+            <span>{{ item.gender }}<span> {{ item.num }}</span></span>
           </div>
         </chart-card>
       </el-col>
       <el-col :sm="24" :xs="24" :md="6" :xl="6" :lg="6" :style="{ marginBottom: '12px' }">
         <chart-card title="户籍数" :total="stat.hukouCount">
-          <template>数量 <span> {{ stat.hukouCount }}</span></template>
+          <span>数量 <span> {{ stat.hukouCount }}</span></span>
         </chart-card>
       </el-col>
       <el-col :sm="24" :xs="24" :md="6" :xl="6" :lg="6" :style="{ marginBottom: '12px' }">
         <chart-card title="车辆数量" :total="stat.carCount">
-          <template>数量 <span>{{ stat.carCount }}</span></template>
+          <span>数量 <span>{{ stat.carCount }}</span></span>
         </chart-card>
       </el-col>
       <el-col :sm="24" :xs="24" :md="6" :xl="6" :lg="6" :style="{ marginBottom: '12px' }">
-        <chart-card title="承包面积" :total="stat.landArea">
-          <template>农业用地 <span>{{ stat.landArea }}</span></template>
+        <chart-card title="耕地面积" total="23478亩">
+          <span>农业用地 <span>34121</span></span>
+          <span>非农用地 <span>34121</span></span>
         </chart-card>
       </el-col>
     </el-row>
@@ -47,15 +48,8 @@
 
 <script>
 import ChartCard from '@/components/ChartCard'
-import Trend from '@/components/Trend'
-import MiniArea from '@/components/MiniArea'
-import MiniBar from '@/components/MiniBar'
-import MiniProgress from '@/components/MiniProgress'
-import RankList from '@/components/RankList/index'
 import Bar from '@/components/Bar.vue'
-import { hukouStat } from '@/api/archive/stat';
-
-const barData2 = []
+import { hukouStat } from '@/api/archive/car'
 
 const rankList = []
 for (let i = 0; i < 7; i++) {
@@ -69,11 +63,6 @@ export default {
   name: 'DashboardAdmin',
   components: {
     ChartCard,
-    Trend,
-    MiniArea,
-    MiniBar,
-    MiniProgress,
-    RankList,
     Bar
   },
   data() {
@@ -84,9 +73,8 @@ export default {
       stat: {
         carCount: 0,
         totalMember: 0,
-        genderStat:{},
-        hukouCount: 0,
-        landArea:0
+        genderStat: {},
+        hukouCount: 0
       }
     }
   },
@@ -94,20 +82,19 @@ export default {
     hukouStat().then(res => {
       this.stat.genderStat = res.data.genderStat
       this.stat.hukouCount = res.data.hukouCount
-      this.stat.landArea   = res.data.landArea
-      let total = 0;
+      let total = 0
       this.stat.genderStat.forEach(x => {
-         total += x.num
+        total += x.num
       })
 
       // 人数
-      this.stat.totalMember = total;
+      this.stat.totalMember = total
 
       // 车辆数
-      this.stat.carCount = res.data.carCount;
+      this.stat.carCount = res.data.carCount
 
       // 年龄分布
-      let ageStat = res.data.ageStat;
+      const ageStat = res.data.ageStat
       this.sortAgeStat(ageStat)
       ageStat.forEach(row => {
         this.barData.push({
@@ -117,7 +104,7 @@ export default {
       })
 
       // 土地分布
-      let landGroupStat = res.data.landGroupStat;
+      const landGroupStat = res.data.landGroupStat
       landGroupStat.sort((a, b) => {
         if (a.group > b.group) {
           return 1
@@ -138,14 +125,14 @@ export default {
   methods: {
     sortAgeStat(list) {
       list.sort((a, b) => {
-          let aRange = a.cls.split('~').map(Number);
-          let bRange = b.cls.split('~').map(Number);
+        const aRange = a.cls.split('~').map(Number)
+        const bRange = b.cls.split('~').map(Number)
 
-          if (aRange[0] === bRange[0]) {
-              return aRange[1] - bRange[1];
-          }
-          return aRange[0] - bRange[0];
-      });
+        if (aRange[0] === bRange[0]) {
+          return aRange[1] - bRange[1]
+        }
+        return aRange[0] - bRange[0]
+      })
     }
   }
 }

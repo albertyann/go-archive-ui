@@ -34,7 +34,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label=" 年龄" prop="age">
-              <span>{{ detail.age }}</span>
+            <span>{{ detail.age }}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -71,7 +71,7 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="电话" prop="tel">
-              <span>{{ detail.tel }}</span>
+            <span>{{ detail.tel }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -124,7 +124,7 @@
           <span>{{ detail.employer }}</span>
         </el-form-item>
         <el-form-item label="养老保险" prop="pension">
-            <span>{{ detail.pension }}</span>
+          <span>{{ detail.pension }}</span>
         </el-form-item>
         <el-form-item label="医疗保险" prop="medicalInsurance">
           <span>{{ detail.medicalInsurance }}</span>
@@ -138,41 +138,40 @@
 </template>
 
 <script>
-  import {
-    getTbMember
-  } from '@/api/archive/member'
-  export default {
-    name: 'residentDetail',
-    components: {},
-    props: {
-      openView: {
-        type: Boolean,
-        default: false
-      }
+import {
+  getTbMember
+} from '@/api/archive/member'
+export default {
+  name: 'ResidentDetail',
+  components: {},
+  props: {
+    openView: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      loading: false,
+      open: true,
+      detail: {}
+    }
+  },
+  created() {
+    this.getDetail()
+  },
+  methods: {
+    getDetail() {
+      this.loading = true
+      getTbMember(1).then(response => {
+        this.detail = response.data
+        this.loading = false
+      })
     },
-    data() {
-      return {
-        loading: false,
-        open: true,
-        detail: {},
-      }
-    },
-    created() {
-      this.getDetail();
-    },
-    methods: {
-      getDetail() {
-        this.loading = true
-        getTbMember(1).then(response => {
-          this.detail = response.data
-          this.loading = false
-        })
-      },
-      closeView() {
-        this.$emit('handleClose', false)
-      }
+    closeView() {
+      this.$emit('handleClose', false)
     }
   }
+}
 </script>
-
 

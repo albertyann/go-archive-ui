@@ -36,10 +36,12 @@ module.exports = {
   devServer: {
     port: port,
     open: false,
-    disableHostCheck: true,
-    overlay: {
-      warnings: false,
-      errors: true
+    allowedHosts: 'all',
+    client: {
+      overlay: {
+        warnings: false,
+        errors: true
+      }
     }
   },
   configureWebpack: {
@@ -57,6 +59,9 @@ module.exports = {
     resolve: {
       alias: {
         '@': resolve('src')
+      },
+      fallback: {
+        'path': require.resolve('path-browserify')
       }
     }
   },
@@ -89,6 +94,7 @@ module.exports = {
       .use('vue-loader')
       .loader('vue-loader')
       .tap(options => {
+        if (!options.compilerOptions) options.compilerOptions = {}
         options.compilerOptions.preserveWhitespace = true
         return options
       })
@@ -102,14 +108,6 @@ module.exports = {
     config
       .when(process.env.NODE_ENV !== 'development',
         config => {
-          config
-            .plugin('ScriptExtHtmlWebpackPlugin')
-            .after('html')
-            .use('script-ext-html-webpack-plugin', [{
-              // `runtime` must same as runtimeChunk name. default is `runtime`
-              inline: /runtime\..*\.js$/
-            }])
-            .end()
           config
             .optimization.splitChunks({
               chunks: 'all',
@@ -147,6 +145,16 @@ module.exports = {
         },
         // DO NOT REMOVE THIS LINE
         javascriptEnabled: true
+      },
+      sass: {
+        sassOptions: {
+          silenceDeprecations: ['import', 'slash-div', 'legacy-js-api', 'global-builtin', 'function-units']
+        }
+      },
+      scss: {
+        sassOptions: {
+          silenceDeprecations: ['import', 'slash-div', 'legacy-js-api', 'global-builtin', 'function-units']
+        }
       }
     }
   }

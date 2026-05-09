@@ -24,7 +24,6 @@ export function getHukouCar(id) {
   })
 }
 
-
 // 新增TbCar
 export function addTbCar(data) {
   return request({
@@ -59,3 +58,12 @@ export function getHukouGroup(data) {
     data: data
   })
 }
+
+export function hukouStat(data) {
+  return request({
+    url: '/api/v1/hukou/stat',
+    method: 'get',
+    data: data
+  })
+}
+
