@@ -15,8 +15,6 @@ export function getTbCar(id) {
     url: '/api/v1/car/' + id,
     method: 'get'
   })
-<<<<<<< HEAD
-=======
 }
 
 export function getHukouCar(id) {
@@ -24,7 +22,6 @@ export function getHukouCar(id) {
     url: '/api/v1/car/hukou/' + id,
     method: 'get'
   })
->>>>>>> main
 }
 
 // 新增TbCar
@@ -61,7 +58,6 @@ export function getHukouGroup(data) {
     data: data
   })
 }
-<<<<<<< HEAD
 
 export function hukouStat(data) {
   return request({
@@ -71,5 +67,3 @@ export function hukouStat(data) {
   })
 }
 
-=======
->>>>>>> main
