@@ -1,4 +1,3 @@
-
 <template>
   <BasicLayout>
     <template #wrapper>

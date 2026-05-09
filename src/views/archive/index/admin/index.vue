@@ -34,9 +34,9 @@
               <el-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
                 <bar :list="barData" title="年龄分布" />
               </el-col>
-              <!-- <el-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
-                <rank-list title="门店销售排行榜" :list="rankList" />
-              </el-col> -->
+              <el-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
+                <bar :list="landData" title="土地分布" />
+              </el-col>
             </el-row>
           </el-tab-pane>
         </el-tabs>
@@ -70,7 +70,7 @@ export default {
   data() {
     return {
       barData: [],
-      barData2,
+      landData: [],
       rankList,
       stat: {
         carCount: 0,
@@ -102,6 +102,24 @@ export default {
         this.barData.push({
           x: row.cls,
           y: row.num
+        })
+      })
+
+      // 土地分布
+      let landGroupStat = res.data.landGroupStat;
+      landGroupStat.sort((a, b) => {
+        if (a.group > b.group) {
+          return 1
+        }
+        if (a.group < b.group) {
+          return -1
+        }
+        return 0
+      })
+      landGroupStat.forEach(row => {
+        this.landData.push({
+          x: row.group + ' 组',
+          y: row.area
         })
       })
     })

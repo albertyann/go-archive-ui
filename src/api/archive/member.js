@@ -26,6 +26,16 @@ export function getTbMember(id) {
   })
 }
 
+<<<<<<< HEAD
+=======
+export function getFamilyMember(id) {
+  return request({
+    url: '/api/v1/member/family/' + id,
+    method: 'get'
+  })
+}
+
+>>>>>>> main
 // 新增TbMember
 export function addTbMember(data) {
   return request({
@@ -53,3 +63,14 @@ export function delTbMember(data) {
   })
 }
 
+<<<<<<< HEAD
+=======
+export function delFamilyMember(data) {
+  return request({
+    url: '/api/v1/member/family',
+    method: 'put',
+    data: data
+  })
+}
+
+>>>>>>> main

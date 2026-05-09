@@ -79,7 +79,7 @@ export const constantRoutes = [
         path: '/dashboard',
         component: () => import('@/views/archive/index'),
         name: 'archiveIndex',
-        meta: { title: '首页x', icon: 'dashboard', affix: true }
+        meta: { title: '首页', icon: 'dashboard', affix: true }
       }
     ]
   },
